@@ -1,0 +1,18 @@
+# histdiff change ledger
+
+> Archived pricing pages and product homepages. Compare the text that changed and inspect both original captures.
+
+## Change records
+
+- [Zoom](zoom.html) — 2019-02-17 to 2020-07-01. The plan comparison changed the listed participant allowance from 100 to 300.
+- [Slack](slack.html) — 2023-06-30 to 2023-12-15. The later capture lists unlimited workflows and app integrations.
+- [Jira](jira.html) — 2023-06-02 to 2023-12-25. The plan table adds Atlassian Intelligence to Premium and Enterprise.
+- [Figma](figma.html) — 2025-05-01 to 2025-09-29. The feature list adds AI design tools and advanced prototyping.
+- [OpenAI API](openai-api.html) — 2025-04-30 to 2025-09-20. The pricing page introduces the GPT-5 model family.
+- [Linear](linear.html) — 2025-04-15 to 2025-09-16. The pricing feature list adds Product Intelligence.
+- [Stripe](stripe.html) — 2025-05-01 to 2025-10-01. The later page describes accepting stablecoin payments.
+- [Shopify](shopify.html) — 2025-05-01 to 2025-09-29. The later capture lists monthly prices for annual subscriptions.
+- [Backblaze](backblaze.html) — 2023-12-30 to 2024-06-30. The later B2 pricing page highlights free egress up to three times monthly storage.
+- [GitHub](github.html) — 2025-05-01 to 2025-10-01. Headings for protected branches and repository rulesets disappear from the captured text.
+- [Notion](notion.html) — 2023-12-22 to 2025-12-10. The AI add-on FAQ gives way to a plan comparison that lists a Notion AI trial.
+- [Discord](discord.html) — 2024-01-01 to 2025-01-01. Discord shifted its homepage emphasis from topic-based communities toward gaming and group chat.
