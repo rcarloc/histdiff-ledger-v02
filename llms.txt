@@ -2,6 +2,11 @@
 
 > Automated change ledger for developer pricing, API limits, and archived web pages. Inspect verified diffs and original captures.
 
+## Live watchlist
+
+- [Monitored Watchlist (28 pages)](watchlist.html) — Auto-checked twice daily.
+- [Full diff index](llms-full.txt)
+
 ## Fresh detected changes
 
 - No substantive changes detected yet since watchlist initialization.

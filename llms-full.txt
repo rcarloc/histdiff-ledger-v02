@@ -1,0 +1,53 @@
+# histdiff change ledger (full machine-readable index)
+
+> Automated change ledger for developer pricing, API limits, and archived web pages. Inspect verified diffs and original captures.
+
+## Fresh detected changes
+
+No substantive fresh changes published yet.
+
+## Archived proof examples
+
+- [Zoom](zoom.html) — 2019-02-17 to 2020-07-01. The plan comparison changed the listed participant allowance from 100 to 300.
+- [Slack](slack.html) — 2023-06-30 to 2023-12-15. The later capture lists unlimited workflows and app integrations.
+- [Jira](jira.html) — 2023-06-02 to 2023-12-25. The plan table adds Atlassian Intelligence to Premium and Enterprise.
+- [Figma](figma.html) — 2025-05-01 to 2025-09-29. The feature list adds AI design tools and advanced prototyping.
+- [OpenAI API](openai-api.html) — 2025-04-30 to 2025-09-20. The pricing page introduces the GPT-5 model family.
+- [Linear](linear.html) — 2025-04-15 to 2025-09-16. The pricing feature list adds Product Intelligence.
+- [Stripe](stripe.html) — 2025-05-01 to 2025-10-01. The later page describes accepting stablecoin payments.
+- [Shopify](shopify.html) — 2025-05-01 to 2025-09-29. The later capture lists monthly prices for annual subscriptions.
+- [Backblaze](backblaze.html) — 2023-12-30 to 2024-06-30. The later B2 pricing page highlights free egress up to three times monthly storage.
+- [GitHub](github.html) — 2025-05-01 to 2025-10-01. Headings for protected branches and repository rulesets disappear from the captured text.
+- [Notion](notion.html) — 2023-12-22 to 2025-12-10. The AI add-on FAQ gives way to a plan comparison that lists a Notion AI trial.
+- [Discord](discord.html) — 2024-01-01 to 2025-01-01. Discord shifted its homepage emphasis from topic-based communities toward gaming and group chat.
+
+## Monitored URLs (28)
+
+- Anthropic Pricing (AI Pricing): https://www.anthropic.com/pricing
+- Anthropic Terms (AI Policy): https://www.anthropic.com/legal/consumer-terms
+- OpenAI Usage Policies (AI Policy): https://openai.com/policies/usage-policies/
+- Stripe Pricing (Dev Pricing): https://stripe.com/pricing
+- Stripe API Versioning (Dev Docs): https://docs.stripe.com/api/versioning
+- GitHub Pricing (Dev Pricing): https://github.com/pricing
+- GitHub Actions Limits (Dev Docs): https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration
+- GitHub Copilot Plans (AI Pricing): https://docs.github.com/en/copilot/get-started/plans-for-github-copilot
+- Cloudflare Workers Pricing (Dev Pricing): https://developers.cloudflare.com/workers/platform/pricing/
+- Cloudflare Workers Limits (Dev Docs): https://developers.cloudflare.com/workers/platform/limits/
+- Cloudflare Pages Limits (Dev Docs): https://developers.cloudflare.com/pages/platform/limits/
+- Vercel Pricing (Dev Pricing): https://vercel.com/pricing
+- Vercel Limits (Dev Docs): https://vercel.com/docs/limits
+- Supabase Pricing (Dev Pricing): https://supabase.com/pricing
+- Linear Pricing (SaaS Pricing): https://linear.app/pricing
+- Figma Pricing (SaaS Pricing): https://www.figma.com/pricing/
+- Notion Pricing (SaaS Pricing): https://www.notion.com/pricing
+- Slack Pricing (SaaS Pricing): https://slack.com/pricing
+- Apify Pricing (Dev Pricing): https://apify.com/pricing
+- Backblaze B2 Pricing (Cloud Pricing): https://www.backblaze.com/cloud-storage/pricing
+- Fly.io Pricing (Dev Pricing): https://fly.io/docs/about/pricing/
+- Render Pricing (Dev Pricing): https://render.com/pricing
+- Neon Pricing (Dev Pricing): https://neon.tech/pricing
+- Resend Pricing (Dev Pricing): https://resend.com/pricing
+- PostHog Pricing (Dev Pricing): https://posthog.com/pricing
+- Sentry Pricing (Dev Pricing): https://sentry.io/pricing/
+- Python Status of Versions (Dev Docs): https://devguide.python.org/versions/
+- Kubernetes Deprecation Policy (Dev Docs): https://kubernetes.io/docs/reference/using-api/deprecation-policy/

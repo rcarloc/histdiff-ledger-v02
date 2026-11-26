@@ -2,8 +2,15 @@ name: Daily Fresh-Change Watch
 
 on:
   schedule:
+    - cron: "0 1 * * *"
     - cron: "0 13 * * *"
   workflow_dispatch:
+    inputs:
+      sync_candidates:
+        description: "Sync any new candidate URLs into watchlist from US runner"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -20,11 +27,15 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Sync candidate watchlist URLs (if requested)
+        if: ${{ inputs.sync_candidates }}
+        run: python scripts/update_ledger.py --sync-candidates
+
       - name: Check watched pages and rebuild ledger
         run: python scripts/update_ledger.py
 
       - name: Run ledger tests
-        run: python -m unittest scripts/test_ledger.py
+        run: python -m unittest -v scripts/test_ledger.py
 
       - name: Commit and push updated ledger
         run: |
@@ -35,5 +46,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "chore: daily fresh-change check"
+          git commit -m "chore: fresh-change watch update"
           git push

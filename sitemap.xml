@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/</loc></url>
+  <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/watchlist.html</loc></url>
   <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/llms.txt</loc></url>
+  <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/llms-full.txt</loc></url>
   <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/feed.xml</loc></url>
   <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/zoom.html</loc></url>
   <url><loc>https://rcarloc.github.io/histdiff-ledger-v02/slack.html</loc></url>

@@ -2,17 +2,19 @@
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import difflib
 import hashlib
 from html import escape
 from html.parser import HTMLParser
+import ipaddress
 import json
 from pathlib import Path
 import re
+import socket
 import sys
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -20,11 +22,12 @@ DATA_DIR = ROOT / "data"
 SNAPSHOTS_DIR = DATA_DIR / "snapshots"
 CHANGES_DIR = ROOT / "changes"
 
-USER_AGENT = "HistDiffLedgerBot/0.3 (+https://rcarloc.github.io/histdiff-ledger-v02/)"
+USER_AGENT = "HistDiffLedgerBot/0.4 (+https://rcarloc.github.io/histdiff-ledger-v02/)"
 MIN_WORDS = 80
 MIN_CHANGED_LINES = 2
 MIN_CHANGE_RATIO = 0.002
 MAX_CHANGE_RATIO = 0.85
+MAX_WATCHLIST = 50
 
 BLOCK_MARKERS = (
     "just a moment...",
@@ -32,6 +35,11 @@ BLOCK_MARKERS = (
     "attention required! | cloudflare",
     "verify you are human",
     "access denied",
+)
+
+VOLATILE_LINE_RE = re.compile(
+    r"^\s*(?:last\s+updated|updated)\s+\d+\s+(?:seconds?|minutes?|hours?|days?)\s+ago\s*$",
+    re.IGNORECASE,
 )
 
 CURATED_RECORDS = [
@@ -52,17 +60,30 @@ CURATED_RECORDS = [
 CANDIDATE_WATCHLIST = [
     {"slug": "anthropic-pricing", "name": "Anthropic Pricing", "category": "AI Pricing", "url": "https://www.anthropic.com/pricing"},
     {"slug": "anthropic-terms", "name": "Anthropic Terms", "category": "AI Policy", "url": "https://www.anthropic.com/legal/consumer-terms"},
+    {"slug": "anthropic-release-notes", "name": "Anthropic Release Notes", "category": "AI Docs", "url": "https://docs.anthropic.com/en/release-notes/overview"},
     {"slug": "openai-policies", "name": "OpenAI Usage Policies", "category": "AI Policy", "url": "https://openai.com/policies/usage-policies/"},
+    {"slug": "openai-models", "name": "OpenAI Models Docs", "category": "AI Docs", "url": "https://platform.openai.com/docs/models"},
+    {"slug": "openai-deprecations", "name": "OpenAI Deprecations", "category": "AI Docs", "url": "https://platform.openai.com/docs/deprecations"},
     {"slug": "google-ai-pricing", "name": "Gemini API Pricing", "category": "AI Pricing", "url": "https://ai.google.dev/gemini-api/docs/pricing"},
     {"slug": "google-ai-rate-limits", "name": "Gemini API Rate Limits", "category": "AI Docs", "url": "https://ai.google.dev/gemini-api/docs/rate-limits"},
+    {"slug": "mistral-pricing", "name": "Mistral AI Pricing", "category": "AI Pricing", "url": "https://mistral.ai/pricing"},
+    {"slug": "deepseek-api-pricing", "name": "DeepSeek API Pricing", "category": "AI Pricing", "url": "https://api-docs.deepseek.com/quick_start/pricing"},
+    {"slug": "groq-pricing", "name": "Groq Pricing", "category": "AI Pricing", "url": "https://groq.com/pricing/"},
+    {"slug": "together-pricing", "name": "Together AI Pricing", "category": "AI Pricing", "url": "https://www.together.ai/pricing"},
+    {"slug": "cohere-pricing", "name": "Cohere Pricing", "category": "AI Pricing", "url": "https://cohere.com/pricing"},
+    {"slug": "cursor-pricing", "name": "Cursor Pricing", "category": "AI Pricing", "url": "https://www.cursor.com/pricing"},
     {"slug": "stripe-pricing", "name": "Stripe Pricing", "category": "Dev Pricing", "url": "https://stripe.com/pricing"},
     {"slug": "stripe-api-versioning", "name": "Stripe API Versioning", "category": "Dev Docs", "url": "https://docs.stripe.com/api/versioning"},
+    {"slug": "stripe-upgrades", "name": "Stripe API Upgrades", "category": "Dev Docs", "url": "https://docs.stripe.com/upgrades"},
     {"slug": "github-pricing", "name": "GitHub Pricing", "category": "Dev Pricing", "url": "https://github.com/pricing"},
     {"slug": "github-actions-limits", "name": "GitHub Actions Limits", "category": "Dev Docs", "url": "https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration"},
     {"slug": "github-copilot-plans", "name": "GitHub Copilot Plans", "category": "AI Pricing", "url": "https://docs.github.com/en/copilot/get-started/plans-for-github-copilot"},
+    {"slug": "github-rest-rate-limits", "name": "GitHub REST Rate Limits", "category": "Dev Docs", "url": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"},
     {"slug": "cloudflare-workers-pricing", "name": "Cloudflare Workers Pricing", "category": "Dev Pricing", "url": "https://developers.cloudflare.com/workers/platform/pricing/"},
     {"slug": "cloudflare-workers-limits", "name": "Cloudflare Workers Limits", "category": "Dev Docs", "url": "https://developers.cloudflare.com/workers/platform/limits/"},
     {"slug": "cloudflare-pages-limits", "name": "Cloudflare Pages Limits", "category": "Dev Docs", "url": "https://developers.cloudflare.com/pages/platform/limits/"},
+    {"slug": "cloudflare-r2-pricing", "name": "Cloudflare R2 Pricing", "category": "Cloud Pricing", "url": "https://developers.cloudflare.com/r2/pricing/"},
+    {"slug": "cloudflare-d1-pricing", "name": "Cloudflare D1 Pricing", "category": "Dev Pricing", "url": "https://developers.cloudflare.com/d1/platform/pricing/"},
     {"slug": "vercel-pricing", "name": "Vercel Pricing", "category": "Dev Pricing", "url": "https://vercel.com/pricing"},
     {"slug": "vercel-limits", "name": "Vercel Limits", "category": "Dev Docs", "url": "https://vercel.com/docs/limits"},
     {"slug": "supabase-pricing", "name": "Supabase Pricing", "category": "Dev Pricing", "url": "https://supabase.com/pricing"},
@@ -74,15 +95,35 @@ CANDIDATE_WATCHLIST = [
     {"slug": "backblaze-b2-pricing", "name": "Backblaze B2 Pricing", "category": "Cloud Pricing", "url": "https://www.backblaze.com/cloud-storage/pricing"},
     {"slug": "fly-pricing", "name": "Fly.io Pricing", "category": "Dev Pricing", "url": "https://fly.io/docs/about/pricing/"},
     {"slug": "render-pricing", "name": "Render Pricing", "category": "Dev Pricing", "url": "https://render.com/pricing"},
+    {"slug": "railway-pricing", "name": "Railway Pricing", "category": "Dev Pricing", "url": "https://railway.com/pricing"},
+    {"slug": "digitalocean-pricing", "name": "DigitalOcean Pricing", "category": "Cloud Pricing", "url": "https://www.digitalocean.com/pricing"},
+    {"slug": "tailscale-pricing", "name": "Tailscale Pricing", "category": "Dev Pricing", "url": "https://tailscale.com/pricing"},
+    {"slug": "clerk-pricing", "name": "Clerk Pricing", "category": "Dev Pricing", "url": "https://clerk.com/pricing"},
+    {"slug": "auth0-pricing", "name": "Auth0 Pricing", "category": "Dev Pricing", "url": "https://auth0.com/pricing"},
+    {"slug": "upstash-pricing", "name": "Upstash Pricing", "category": "Dev Pricing", "url": "https://upstash.com/pricing"},
+    {"slug": "turso-pricing", "name": "Turso Pricing", "category": "Dev Pricing", "url": "https://turso.tech/pricing"},
+    {"slug": "planetscale-pricing", "name": "PlanetScale Pricing", "category": "Dev Pricing", "url": "https://planetscale.com/pricing"},
     {"slug": "neon-pricing", "name": "Neon Pricing", "category": "Dev Pricing", "url": "https://neon.tech/pricing"},
     {"slug": "resend-pricing", "name": "Resend Pricing", "category": "Dev Pricing", "url": "https://resend.com/pricing"},
     {"slug": "posthog-pricing", "name": "PostHog Pricing", "category": "Dev Pricing", "url": "https://posthog.com/pricing"},
     {"slug": "sentry-pricing", "name": "Sentry Pricing", "category": "Dev Pricing", "url": "https://sentry.io/pricing/"},
+    {"slug": "docker-hub-pricing", "name": "Docker Pricing", "category": "Dev Pricing", "url": "https://www.docker.com/pricing/"},
+    {"slug": "docker-hub-limits", "name": "Docker Hub Usage Limits", "category": "Dev Docs", "url": "https://docs.docker.com/docker-hub/usage/"},
     {"slug": "python-docs-release", "name": "Python Status of Versions", "category": "Dev Docs", "url": "https://devguide.python.org/versions/"},
     {"slug": "kubernetes-deprecation", "name": "Kubernetes Deprecation Policy", "category": "Dev Docs", "url": "https://kubernetes.io/docs/reference/using-api/deprecation-policy/"},
     {"slug": "docker-compose-version", "name": "Docker Compose File Spec", "category": "Dev Docs", "url": "https://docs.docker.com/reference/compose-file/version-and-name/"},
     {"slug": "huggingface-hub-pricing", "name": "Hugging Face Pricing", "category": "AI Pricing", "url": "https://huggingface.co/pricing"},
 ]
+
+TYPOGRAPHY_TRANS = str.maketrans({
+    "\u2018": "'",
+    "\u2019": "'",
+    "\u201c": '"',
+    "\u201d": '"',
+    "\u2013": "-",
+    "\u2014": "-",
+    "\u00a0": " ",
+})
 
 
 class TextExtractor(HTMLParser):
@@ -173,12 +214,12 @@ class TextExtractor(HTMLParser):
 
     def get_text(self) -> str:
         raw_tokens = self._main_tokens if (self._has_main and len(" ".join(self._main_tokens).split()) >= MIN_WORDS) else (self._tokens + self._main_tokens)
-        raw = "".join(raw_tokens)
+        raw = "".join(raw_tokens).translate(TYPOGRAPHY_TRANS)
         lines: list[str] = []
         for line in raw.splitlines():
             norm = re.sub(r"\s+", " ", line).strip(" |")
             norm = re.sub(r"\s*\|\s*", " | ", norm)
-            if norm:
+            if norm and not VOLATILE_LINE_RE.match(norm):
                 lines.append(norm)
         return "\n".join(lines)
 
@@ -256,6 +297,41 @@ def summarize_diff(unified_diff: str, name: str) -> str:
     return f"Detected substantive wording update on {name}."
 
 
+def is_safe_public_url(url: str) -> tuple[bool, str]:
+    """Validate URL is https:// and resolves only to public global IPs (SSRF guard)."""
+    try:
+        parsed = urlparse(url.strip())
+    except Exception:
+        return False, "Invalid URL syntax."
+    if parsed.scheme != "https" or not parsed.netloc or not parsed.hostname:
+        return False, "Only https:// URLs with a valid hostname are allowed."
+    host = parsed.hostname.lower()
+    if host in ("localhost", "localhost.localdomain") or host.endswith(".local") or host.endswith(".internal"):
+        return False, "Local or internal hostnames are not allowed."
+    try:
+        ip_literal = ipaddress.ip_address(host)
+        if not ip_literal.is_global:
+            return False, "Non-public IP addresses are not allowed."
+        return True, "OK"
+    except ValueError:
+        pass
+    try:
+        infos = socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
+    except socket.gaierror as exc:
+        return False, f"DNS lookup failed for {host}: {exc}"
+    if not infos:
+        return False, f"No DNS records found for {host}."
+    for info in infos:
+        ip_str = info[4][0].split("%")[0]
+        try:
+            ip_obj = ipaddress.ip_address(ip_str)
+        except ValueError:
+            return False, f"Invalid resolved address: {ip_str}"
+        if not ip_obj.is_global:
+            return False, f"Resolved IP {ip_str} is not globally routable."
+    return True, "OK"
+
+
 def fetch_url(url: str, timeout: int = 18) -> tuple[int, str]:
     req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml,*/*;q=0.8"})
     with urlopen(req, timeout=timeout) as resp:
@@ -288,6 +364,42 @@ def lookup_wayback_latest(url: str) -> dict | None:
     return None
 
 
+def ping_wayback_save(url: str) -> None:
+    """Best-effort Save Page Now ping so Wayback captures newly changed pages."""
+    try:
+        req = Request(f"https://web.archive.org/save/{url}", headers={"User-Agent": USER_AGENT})
+        with urlopen(req, timeout=8):
+            pass
+    except Exception:
+        pass
+
+
+def submit_indexnow(cfg: dict, changed_urls: list[str]) -> bool:
+    """Ping IndexNow API (Bing / ChatGPT Search / Copilot) for newly published pages."""
+    key = (cfg.get("indexnow_key") or "").strip()
+    if not key or not changed_urls:
+        return False
+    base = cfg["base_url"].rstrip("/")
+    host = urlparse(base).netloc
+    payload = {
+        "host": host,
+        "key": key,
+        "keyLocation": f"{base}/{key}.txt",
+        "urlList": changed_urls,
+    }
+    try:
+        req = Request(
+            "https://api.indexnow.org/indexnow",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json; charset=utf-8", "User-Agent": USER_AGENT},
+            method="POST",
+        )
+        with urlopen(req, timeout=10) as resp:
+            return 200 <= resp.status < 300
+    except Exception:
+        return False
+
+
 def load_json(path: Path, default):
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
@@ -311,18 +423,41 @@ def analytics_tag(cfg: dict) -> str:
     return "".join(tags)
 
 
-def render_page_shell(title: str, description: str, schema: dict, body: str, cfg: dict, depth: int = 0) -> str:
+def render_page_shell(
+    title: str,
+    description: str,
+    schema: dict,
+    body: str,
+    cfg: dict,
+    depth: int = 0,
+    canonical_rel: str = "",
+    og_type: str = "website",
+) -> str:
     prefix = "../" * depth
+    base = cfg["base_url"].rstrip("/")
+    canonical_url = f"{base}/{canonical_rel.lstrip('/')}" if canonical_rel else f"{base}/"
     structured = json.dumps({"@context": "https://schema.org", **schema}, ensure_ascii=False).replace("<", r"\u003c")
-    store_href = f'{cfg["store_url"]}?utm_source=histdiff_ledger&utm_medium=referral&utm_campaign=fresh_changes'
+    store_href = f'{cfg["store_url"]}?utm_source=histdiff_ledger&utm_medium=referral&utm_campaign=fresh_changes&utm_content=header'
+    full_title = f"{title} · histdiff"
+    meta_tags = (
+        f'<link rel="canonical" href="{escape(canonical_url, quote=True)}">'
+        f'<meta property="og:title" content="{escape(full_title, quote=True)}">'
+        f'<meta property="og:description" content="{escape(description, quote=True)}">'
+        f'<meta property="og:type" content="{escape(og_type, quote=True)}">'
+        f'<meta property="og:url" content="{escape(canonical_url, quote=True)}">'
+        f'<meta name="twitter:card" content="summary">'
+    )
     return (
         f'<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">\n'
-        f'<title>{escape(title)} · histdiff</title><meta name="description" content="{escape(description, quote=True)}">\n'
+        f'<title>{escape(full_title)}</title><meta name="description" content="{escape(description, quote=True)}">\n'
+        f'{meta_tags}\n'
         f'<link rel="stylesheet" href="{prefix}style.css"><script type="application/ld+json">{structured}</script>'
         f'{analytics_tag(cfg)}</head>\n'
         f'<body><header><a class="brand" href="{prefix}index.html">hist<span>diff</span></a>'
         f'<a href="{escape(store_href, quote=True)}">Actor on Apify ↗</a></header>\n'
-        f'{body}<footer>histdiff &nbsp;/&nbsp; <a href="{prefix}llms.txt">Machine-readable index</a> &nbsp;/&nbsp; <a href="{prefix}feed.xml">Atom feed</a></footer></body></html>\n'
+        f'{body}<footer>histdiff &nbsp;/&nbsp; <a href="{prefix}watchlist.html">Watchlist</a> &nbsp;/&nbsp; '
+        f'<a href="{prefix}llms.txt">llms.txt</a> &nbsp;/&nbsp; <a href="{prefix}llms-full.txt">llms-full.txt</a> &nbsp;/&nbsp; '
+        f'<a href="{prefix}feed.xml">Atom feed</a></footer></body></html>\n'
     )
 
 
@@ -330,7 +465,7 @@ def issue_suggest_url(cfg: dict) -> str:
     repo = cfg.get("github_repo", "rcarloc/histdiff-ledger-v02")
     params = urlencode({
         "title": "Watch request: <page name>",
-        "body": "URL to monitor for changes:\nWhy wording changes on this page matter:\n",
+        "body": "URL to monitor for changes (https://...):\nWhy wording changes on this page matter:\n",
     })
     return f"https://github.com/{repo}/issues/new?{params}"
 
@@ -348,6 +483,7 @@ def render_fresh_change_page(entry: dict, cfg: dict) -> str:
             "utm_source": "histdiff_ledger",
             "utm_medium": "referral",
             "utm_campaign": "fresh_changes",
+            "utm_content": "fresh_change",
             "input": json.dumps(actor_input, separators=(",", ":")),
         })
     )
@@ -384,7 +520,68 @@ def render_fresh_change_page(entry: dict, cfg: dict) -> str:
         "temporalCoverage": f"{date_a}/{date_b}",
         "isBasedOn": based_on,
     }
-    return render_page_shell(f"{name} change ({date_b})", summary, schema, body, cfg, depth=1)
+    return render_page_shell(
+        f"{name} change ({date_b})",
+        summary,
+        schema,
+        body,
+        cfg,
+        depth=1,
+        canonical_rel=entry["file"],
+        og_type="article",
+    )
+
+
+def render_watchlist_page(cfg: dict, watchlist: list[dict], run_status: dict) -> str:
+    now_dt = datetime.now(timezone.utc)
+    date_end = now_dt.strftime("%Y-%m-%d")
+    date_start = (now_dt - timedelta(days=180)).strftime("%Y-%m-%d")
+    last_checked = run_status.get("last_checked_utc", "pending")[:16].replace("T", " ")
+    suggest_href = escape(issue_suggest_url(cfg), quote=True)
+
+    rows_html = []
+    structured = []
+    for pos, item in enumerate(watchlist, 1):
+        snap = load_json(SNAPSHOTS_DIR / f'{item["slug"]}.json', {})
+        words = snap.get("word_count", 0)
+        sha_short = (snap.get("sha256") or "")[:12]
+        fetched = (snap.get("fetched_utc") or last_checked)[:16].replace("T", " ")
+        actor_input = {"urls": [item["url"]], "date_start": date_start, "date_end": date_end, "tolerance_days": 14}
+        deep_url = (
+            f'{cfg["console_url"]}?'
+            + urlencode({
+                "utm_source": "histdiff_ledger",
+                "utm_medium": "referral",
+                "utm_campaign": "fresh_changes",
+                "utm_content": "watchlist",
+                "input": json.dumps(actor_input, separators=(",", ":")),
+            })
+        )
+        meta_txt = f'{item.get("category", "Docs")} · {words:,} words · sha256:{sha_short} · {item["url"]}'
+        rows_html.append(
+            f'<li><a class="record" href="{escape(deep_url, quote=True)}">'
+            f'<strong>{escape(item["name"])}</strong>'
+            f'<span class="summary">{escape(meta_txt)}</span>'
+            f'<span class="dates">Checked {escape(fetched)}</span>'
+            f'<span class="arrow" aria-hidden="true">↗</span></a></li>'
+        )
+        structured.append({"@type": "ListItem", "position": pos, "name": item["name"], "url": item["url"]})
+
+    desc = f"Live directory of {len(watchlist)} developer, AI, and SaaS pricing, policy, and documentation pages monitored daily by HistDiff."
+    body = (
+        f'<main><div class="hero"><a href="index.html">← Change ledger</a><h1>Watchlist</h1><p>{desc}</p></div>\n'
+        f'<div class="actions"><a class="cta" href="{suggest_href}">Suggest a page to watch ↗</a>'
+        f'<a class="cta-secondary" href="feed.xml">Subscribe via Atom feed</a></div>\n'
+        f'<div class="section-head"><h2>Monitored pages ({len(watchlist)})</h2>'
+        f'<span class="section-meta">Click any row to compare last 180 days on Apify</span></div>\n'
+        f'<ul class="records">{"".join(rows_html)}</ul></main>\n'
+    )
+    schema = {
+        "@type": "CollectionPage",
+        "name": "histdiff monitored watchlist",
+        "mainEntity": {"@type": "ItemList", "numberOfItems": len(watchlist), "itemListElement": structured},
+    }
+    return render_page_shell("Watchlist", desc, schema, body, cfg, depth=0, canonical_rel="watchlist.html")
 
 
 def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict, watchlist: list[dict]) -> None:
@@ -394,7 +591,8 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
         rel_path.parent.mkdir(parents=True, exist_ok=True)
         rel_path.write_text(render_fresh_change_page(entry, cfg), encoding="utf-8")
 
-    # Fresh changes section
+    (ROOT / "watchlist.html").write_text(render_watchlist_page(cfg, watchlist, run_status), encoding="utf-8")
+
     watched_n = run_status.get("watched_count", len(watchlist))
     last_checked = run_status.get("last_checked_utc", "pending")[:16].replace("T", " ")
     suggest_href = escape(issue_suggest_url(cfg), quote=True)
@@ -402,6 +600,7 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
     if fresh_entries:
         fresh_items_html = []
         fresh_llms = []
+        fresh_full = []
         for e in fresh_entries[:30]:
             dates = f'{e["timestamp_a"][:10]} → {e["timestamp_b"][:10]}'
             fresh_items_html.append(
@@ -411,17 +610,24 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
                 f'<span class="dates">{dates}</span><span class="arrow" aria-hidden="true">↗</span></a></li>'
             )
             fresh_llms.append(f'- [{e["name"]}]({e["file"]}) — {e["timestamp_a"][:10]} to {e["timestamp_b"][:10]}. {e["summary"]}')
+        for e in fresh_entries[:15]:
+            diff_preview = "\n".join(e["unified_diff"].splitlines()[:80])
+            fresh_full.append(
+                f'### {e["name"]} ({e["timestamp_a"][:10]} to {e["timestamp_b"][:10]})\n'
+                f'- URL: {e["url"]}\n- Receipt: {e["file"]}\n- Summary: {e["summary"]}\n\n```diff\n{diff_preview}\n```\n'
+            )
         fresh_block = f'<ul class="records">{"".join(fresh_items_html)}</ul>'
     else:
         fresh_llms = ["- No substantive changes detected yet since watchlist initialization."]
+        fresh_full = ["No substantive fresh changes published yet."]
         fresh_block = (
-            f'<div class="status-box">Monitoring <strong>{watched_n}</strong> developer &amp; AI pricing/docs pages daily '
+            f'<div class="status-box">Monitoring <strong>{watched_n}</strong> developer &amp; AI pricing/docs pages twice daily '
             f'(last check: <strong>{escape(last_checked)} UTC</strong>). No substantive wording diffs detected since baseline — '
             f'new receipt pages auto-publish here as edits occur. '
+            f'<a href="watchlist.html">View all {watched_n} watched pages</a> · '
             f'<a href="{suggest_href}">Suggest a URL to watch ↗</a></div>'
         )
 
-    # Curated 12 archived proof records (preserved)
     curated_html = []
     structured = []
     curated_llms = []
@@ -438,6 +644,7 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
     body = (
         f'<main><div class="hero"><h1>Change ledger</h1><p>{description}</p></div>\n'
         f'<p>Featured examples: <a href="notion.html">Notion pricing</a> · <a href="figma.html">Figma pricing</a> · '
+        f'<a href="watchlist.html">Live watchlist ({watched_n})</a> · '
         f'<a href="{suggest_href}">Suggest a page to watch ↗</a> · <a href="feed.xml">Atom feed</a></p>\n'
         f'<div class="section-head"><h2>Fresh detected changes</h2><span class="section-meta">Watching {watched_n} pages · Last check {escape(last_checked)} UTC</span></div>\n'
         f'{fresh_block}\n'
@@ -453,12 +660,17 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
         "name": "histdiff change ledger",
         "mainEntity": {"@type": "ItemList", "numberOfItems": len(CURATED_RECORDS), "itemListElement": structured},
     }
-    (ROOT / "index.html").write_text(render_page_shell("Change ledger", description, index_schema, body, cfg, depth=0), encoding="utf-8")
+    (ROOT / "index.html").write_text(
+        render_page_shell("Change ledger", description, index_schema, body, cfg, depth=0, canonical_rel=""),
+        encoding="utf-8",
+    )
 
-    # llms.txt
     llms_text = (
         "# histdiff change ledger\n\n"
         f"> {description}\n\n"
+        "## Live watchlist\n\n"
+        f"- [Monitored Watchlist ({watched_n} pages)](watchlist.html) — Auto-checked twice daily.\n"
+        "- [Full diff index](llms-full.txt)\n\n"
         "## Fresh detected changes\n\n"
         + "\n".join(fresh_llms)
         + "\n\n## Archived proof examples\n\n"
@@ -467,15 +679,27 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
     )
     (ROOT / "llms.txt").write_text(llms_text, encoding="utf-8")
 
-    # sitemap.xml
+    watch_lines = [f"- {w['name']} ({w.get('category', 'Docs')}): {w['url']}" for w in watchlist]
+    llms_full_text = (
+        "# histdiff change ledger (full machine-readable index)\n\n"
+        f"> {description}\n\n"
+        "## Fresh detected changes\n\n"
+        + "\n".join(fresh_full)
+        + "\n\n## Archived proof examples\n\n"
+        + "\n".join(curated_llms)
+        + f"\n\n## Monitored URLs ({len(watchlist)})\n\n"
+        + "\n".join(watch_lines)
+        + "\n"
+    )
+    (ROOT / "llms-full.txt").write_text(llms_full_text, encoding="utf-8")
+
     base = cfg["base_url"].rstrip("/")
-    urls = [f"{base}/", f"{base}/llms.txt", f"{base}/feed.xml"]
+    urls = [f"{base}/", f"{base}/watchlist.html", f"{base}/llms.txt", f"{base}/llms-full.txt", f"{base}/feed.xml"]
     urls.extend(f"{base}/{e['file']}" for e in fresh_entries)
     urls.extend(f"{base}/{fname}" for _, fname, _, _, _ in CURATED_RECORDS)
     url_xml = "".join(f"  <url><loc>{escape(u)}</loc></url>\n" for u in urls)
     (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{url_xml}</urlset>\n', encoding="utf-8")
 
-    # feed.xml (Atom)
     updated = run_status.get("last_checked_utc") or datetime.now(timezone.utc).isoformat()
     feed_entries = []
     for e in fresh_entries[:20]:
@@ -499,16 +723,22 @@ def rebuild_site_indexes(cfg: dict, fresh_entries: list[dict], run_status: dict,
         f"{''.join(feed_entries)}</feed>\n"
     )
     (ROOT / "feed.xml").write_text(atom, encoding="utf-8")
-
-    # robots.txt
     (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {base}/sitemap.xml\n", encoding="utf-8")
 
 
-def init_watchlist(cfg: dict) -> None:
+def sync_candidates(cfg: dict, reset_existing: bool = False) -> None:
     SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-    kept: list[dict] = []
+    watchlist = [] if reset_existing else load_json(DATA_DIR / "watchlist.json", [])
+    existing_slugs = {item["slug"] for item in watchlist}
+    existing_urls = {item["url"] for item in watchlist}
+
+    added = 0
     for item in CANDIDATE_WATCHLIST:
+        if len(watchlist) >= MAX_WATCHLIST:
+            break
+        if item["slug"] in existing_slugs or item["url"] in existing_urls:
+            continue
         try:
             status, body = fetch_url(item["url"])
             text = extract_text(body)
@@ -523,27 +753,84 @@ def init_watchlist(cfg: dict) -> None:
                     "text": text,
                 }
                 save_json(SNAPSHOTS_DIR / f'{item["slug"]}.json', snap)
-                kept.append(item)
-                print(f"OK   {item['slug']:30s} ({snap['word_count']} words)")
+                watchlist.append(item)
+                existing_slugs.add(item["slug"])
+                existing_urls.add(item["url"])
+                added += 1
+                print(f"ADDED {item['slug']:30s} ({snap['word_count']} words)")
             else:
-                print(f"SKIP {item['slug']:30s} (status={status}, words={word_count(text)})")
+                print(f"SKIP  {item['slug']:30s} (status={status}, words={word_count(text)})")
         except Exception as exc:
-            print(f"FAIL {item['slug']:30s} ({type(exc).__name__}: {exc})")
-        if len(kept) >= 28:
-            break
+            print(f"FAIL  {item['slug']:30s} ({type(exc).__name__}: {exc})")
 
-    save_json(DATA_DIR / "watchlist.json", kept)
+    save_json(DATA_DIR / "watchlist.json", watchlist)
     fresh = load_json(DATA_DIR / "fresh-changes.json", [])
-    status_obj = {
+    status_obj = load_json(DATA_DIR / "run-status.json", {})
+    status_obj.update({
         "last_checked_utc": now,
-        "watched_count": len(kept),
-        "ok_count": len(kept),
-        "failed_count": 0,
+        "watched_count": len(watchlist),
         "fresh_changes_count": len(fresh),
-    }
+    })
     save_json(DATA_DIR / "run-status.json", status_obj)
-    rebuild_site_indexes(cfg, fresh, status_obj, kept)
-    print(f"Initialized watchlist with {len(kept)} pages.")
+    rebuild_site_indexes(cfg, fresh, status_obj, watchlist)
+    print(f"Watchlist now has {len(watchlist)} pages (added {added}).")
+
+
+def derive_slug_and_name(url: str, custom_name: str = "") -> tuple[str, str]:
+    parsed = urlparse(url)
+    host = parsed.hostname or "site"
+    host_short = host[4:] if host.startswith("www.") else host
+    path_parts = [p for p in parsed.path.strip("/").split("/") if p]
+    raw_slug = "-".join([host_short.split(".")[0]] + path_parts[:2])
+    slug = re.sub(r"[^a-z0-9]+", "-", raw_slug.lower()).strip("-")[:48] or "page"
+    if custom_name.strip():
+        return slug, custom_name.strip()[:60]
+    label = " ".join([host_short] + [p.replace("-", " ").title() for p in path_parts[:2]])
+    return slug, label[:60]
+
+
+def add_custom_url(cfg: dict, url: str, custom_name: str = "") -> dict:
+    url = url.strip()
+    ok, reason = is_safe_public_url(url)
+    if not ok:
+        return {"added": False, "reason": reason}
+
+    watchlist = load_json(DATA_DIR / "watchlist.json", [])
+    if any(w["url"].rstrip("/") == url.rstrip("/") for w in watchlist):
+        return {"added": False, "reason": "URL is already in the watchlist."}
+
+    try:
+        status, body = fetch_url(url)
+    except Exception as exc:
+        return {"added": False, "reason": f"Failed to fetch URL: {type(exc).__name__}: {exc}"}
+
+    text = extract_text(body)
+    if status != 200 or is_blocked_or_junk(text):
+        return {"added": False, "reason": f"Page returned status={status} with {word_count(text)} clean words (minimum {MIN_WORDS}, non-blocked required)."}
+
+    slug, name = derive_slug_and_name(url, custom_name)
+    existing_slugs = {w["slug"] for w in watchlist}
+    base_slug = slug
+    idx = 2
+    while slug in existing_slugs:
+        slug = f"{base_slug}-{idx}"
+        idx += 1
+
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    entry = {"slug": slug, "name": name, "category": "Community Request", "url": url}
+    watchlist.append(entry)
+    save_json(DATA_DIR / "watchlist.json", watchlist)
+    save_json(SNAPSHOTS_DIR / f"{slug}.json", {
+        "slug": slug, "name": name, "url": url,
+        "fetched_utc": now, "sha256": sha256_text(text), "word_count": word_count(text), "text": text,
+    })
+
+    fresh = load_json(DATA_DIR / "fresh-changes.json", [])
+    status_obj = load_json(DATA_DIR / "run-status.json", {})
+    status_obj.update({"last_checked_utc": now, "watched_count": len(watchlist), "fresh_changes_count": len(fresh)})
+    save_json(DATA_DIR / "run-status.json", status_obj)
+    rebuild_site_indexes(cfg, fresh, status_obj, watchlist)
+    return {"added": True, "slug": slug, "name": name, "word_count": word_count(text), "reason": "Added to watchlist and baseline snapshot captured."}
 
 
 def run_daily_check(cfg: dict) -> None:
@@ -555,7 +842,7 @@ def run_daily_check(cfg: dict) -> None:
 
     ok_count = 0
     failed_count = 0
-    new_count = 0
+    new_urls: list[str] = []
 
     for item in watchlist:
         slug = item["slug"]
@@ -579,9 +866,9 @@ def run_daily_check(cfg: dict) -> None:
             diff = evaluate_diff(prev["text"], new_text)
             if diff is not None and (slug, new_hash) not in seen_keys:
                 rel_file = f"changes/{slug}-{today}.html"
-                # Avoid overwriting an earlier diff on the same UTC date by suffixing short hash if needed
                 if (ROOT / rel_file).exists():
                     rel_file = f"changes/{slug}-{today}-{new_hash[:6]}.html"
+                ping_wayback_save(item["url"])
                 wb = lookup_wayback_latest(item["url"])
                 entry = {
                     "slug": slug,
@@ -602,7 +889,7 @@ def run_daily_check(cfg: dict) -> None:
                 }
                 fresh.insert(0, entry)
                 seen_keys.add((slug, new_hash))
-                new_count += 1
+                new_urls.append(f'{cfg["base_url"].rstrip("/")}/{rel_file}')
                 save_json(snap_path, {
                     "slug": slug, "name": item["name"], "url": item["url"],
                     "fetched_utc": now, "sha256": new_hash, "word_count": word_count(new_text),
@@ -625,18 +912,30 @@ def run_daily_check(cfg: dict) -> None:
     }
     save_json(DATA_DIR / "run-status.json", status_obj)
     rebuild_site_indexes(cfg, fresh, status_obj, watchlist)
-    print(f"Check complete: ok={ok_count}, failed={failed_count}, new_changes={new_count}")
+    if new_urls:
+        pinged = submit_indexnow(cfg, new_urls + [f'{cfg["base_url"].rstrip("/")}/', f'{cfg["base_url"].rstrip("/")}/feed.xml'])
+        print(f"IndexNow pinged for {len(new_urls)} new pages: {pinged}")
+    print(f"Check complete: ok={ok_count}, failed={failed_count}, new_changes={len(new_urls)}")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--init-watchlist", action="store_true")
+    parser.add_argument("--sync-candidates", action="store_true")
     parser.add_argument("--render-only", action="store_true")
+    parser.add_argument("--add-url", type=str, default="")
+    parser.add_argument("--name", type=str, default="")
     args = parser.parse_args()
 
     cfg = load_json(DATA_DIR / "config.json", {})
     if args.init_watchlist:
-        init_watchlist(cfg)
+        sync_candidates(cfg, reset_existing=True)
+    elif args.sync_candidates:
+        sync_candidates(cfg, reset_existing=False)
+    elif args.add_url:
+        res = add_custom_url(cfg, args.add_url, args.name)
+        print(json.dumps(res))
+        return 0 if res.get("added") else 2
     elif args.render_only:
         watchlist = load_json(DATA_DIR / "watchlist.json", [])
         fresh = load_json(DATA_DIR / "fresh-changes.json", [])
