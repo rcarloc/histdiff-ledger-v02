@@ -1,0 +1,170 @@
+[
+  {
+    "slug": "anthropic-pricing",
+    "name": "Anthropic Pricing",
+    "category": "AI Pricing",
+    "url": "https://www.anthropic.com/pricing"
+  },
+  {
+    "slug": "anthropic-terms",
+    "name": "Anthropic Terms",
+    "category": "AI Policy",
+    "url": "https://www.anthropic.com/legal/consumer-terms"
+  },
+  {
+    "slug": "openai-policies",
+    "name": "OpenAI Usage Policies",
+    "category": "AI Policy",
+    "url": "https://openai.com/policies/usage-policies/"
+  },
+  {
+    "slug": "stripe-pricing",
+    "name": "Stripe Pricing",
+    "category": "Dev Pricing",
+    "url": "https://stripe.com/pricing"
+  },
+  {
+    "slug": "stripe-api-versioning",
+    "name": "Stripe API Versioning",
+    "category": "Dev Docs",
+    "url": "https://docs.stripe.com/api/versioning"
+  },
+  {
+    "slug": "github-pricing",
+    "name": "GitHub Pricing",
+    "category": "Dev Pricing",
+    "url": "https://github.com/pricing"
+  },
+  {
+    "slug": "github-actions-limits",
+    "name": "GitHub Actions Limits",
+    "category": "Dev Docs",
+    "url": "https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration"
+  },
+  {
+    "slug": "github-copilot-plans",
+    "name": "GitHub Copilot Plans",
+    "category": "AI Pricing",
+    "url": "https://docs.github.com/en/copilot/get-started/plans-for-github-copilot"
+  },
+  {
+    "slug": "cloudflare-workers-pricing",
+    "name": "Cloudflare Workers Pricing",
+    "category": "Dev Pricing",
+    "url": "https://developers.cloudflare.com/workers/platform/pricing/"
+  },
+  {
+    "slug": "cloudflare-workers-limits",
+    "name": "Cloudflare Workers Limits",
+    "category": "Dev Docs",
+    "url": "https://developers.cloudflare.com/workers/platform/limits/"
+  },
+  {
+    "slug": "cloudflare-pages-limits",
+    "name": "Cloudflare Pages Limits",
+    "category": "Dev Docs",
+    "url": "https://developers.cloudflare.com/pages/platform/limits/"
+  },
+  {
+    "slug": "vercel-pricing",
+    "name": "Vercel Pricing",
+    "category": "Dev Pricing",
+    "url": "https://vercel.com/pricing"
+  },
+  {
+    "slug": "vercel-limits",
+    "name": "Vercel Limits",
+    "category": "Dev Docs",
+    "url": "https://vercel.com/docs/limits"
+  },
+  {
+    "slug": "supabase-pricing",
+    "name": "Supabase Pricing",
+    "category": "Dev Pricing",
+    "url": "https://supabase.com/pricing"
+  },
+  {
+    "slug": "linear-pricing",
+    "name": "Linear Pricing",
+    "category": "SaaS Pricing",
+    "url": "https://linear.app/pricing"
+  },
+  {
+    "slug": "figma-pricing",
+    "name": "Figma Pricing",
+    "category": "SaaS Pricing",
+    "url": "https://www.figma.com/pricing/"
+  },
+  {
+    "slug": "notion-pricing",
+    "name": "Notion Pricing",
+    "category": "SaaS Pricing",
+    "url": "https://www.notion.com/pricing"
+  },
+  {
+    "slug": "slack-pricing",
+    "name": "Slack Pricing",
+    "category": "SaaS Pricing",
+    "url": "https://slack.com/pricing"
+  },
+  {
+    "slug": "apify-pricing",
+    "name": "Apify Pricing",
+    "category": "Dev Pricing",
+    "url": "https://apify.com/pricing"
+  },
+  {
+    "slug": "backblaze-b2-pricing",
+    "name": "Backblaze B2 Pricing",
+    "category": "Cloud Pricing",
+    "url": "https://www.backblaze.com/cloud-storage/pricing"
+  },
+  {
+    "slug": "fly-pricing",
+    "name": "Fly.io Pricing",
+    "category": "Dev Pricing",
+    "url": "https://fly.io/docs/about/pricing/"
+  },
+  {
+    "slug": "render-pricing",
+    "name": "Render Pricing",
+    "category": "Dev Pricing",
+    "url": "https://render.com/pricing"
+  },
+  {
+    "slug": "neon-pricing",
+    "name": "Neon Pricing",
+    "category": "Dev Pricing",
+    "url": "https://neon.tech/pricing"
+  },
+  {
+    "slug": "resend-pricing",
+    "name": "Resend Pricing",
+    "category": "Dev Pricing",
+    "url": "https://resend.com/pricing"
+  },
+  {
+    "slug": "posthog-pricing",
+    "name": "PostHog Pricing",
+    "category": "Dev Pricing",
+    "url": "https://posthog.com/pricing"
+  },
+  {
+    "slug": "sentry-pricing",
+    "name": "Sentry Pricing",
+    "category": "Dev Pricing",
+    "url": "https://sentry.io/pricing/"
+  },
+  {
+    "slug": "python-docs-release",
+    "name": "Python Status of Versions",
+    "category": "Dev Docs",
+    "url": "https://devguide.python.org/versions/"
+  },
+  {
+    "slug": "kubernetes-deprecation",
+    "name": "Kubernetes Deprecation Policy",
+    "category": "Dev Docs",
+    "url": "https://kubernetes.io/docs/reference/using-api/deprecation-policy/"
+  }
+]
