@@ -448,8 +448,11 @@ def render_page_shell(
     structured = json.dumps({"@context": "https://schema.org", **schema}, ensure_ascii=False).replace("<", r"\u003c")
     store_href = f'{cfg["store_url"]}?utm_source=histdiff_ledger&utm_medium=referral&utm_campaign=fresh_changes&utm_content=header'
     full_title = f"{title} · histdiff"
+    gsc = (cfg.get("google_site_verification") or "").strip()
+    gsc_meta = f'<meta name="google-site-verification" content="{escape(gsc, quote=True)}">' if gsc else ""
     meta_tags = (
         f'<link rel="canonical" href="{escape(canonical_url, quote=True)}">'
+        f'{gsc_meta}'
         f'<meta property="og:title" content="{escape(full_title, quote=True)}">'
         f'<meta property="og:description" content="{escape(description, quote=True)}">'
         f'<meta property="og:type" content="{escape(og_type, quote=True)}">'
