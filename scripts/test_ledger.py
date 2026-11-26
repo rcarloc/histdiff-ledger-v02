@@ -127,8 +127,31 @@ class LedgerTests(unittest.TestCase):
         self.assertIn("Compare in Apify", page_html)
         self.assertIn("Suggest a page to watch", page_html)
         self.assertIn('"@type": "Article"', page_html)
+        self.assertIn('"@type": "FAQPage"', page_html)
+        self.assertIn('class="answer-box"', page_html)
         self.assertIn('<link rel="canonical"', page_html)
         self.assertIn("Pro plan is $25/mo", page_html)
+
+    def test_extract_highlights_and_bluesky_post(self) -> None:
+        diff = "--- a\n+++ b\n@@ -1,2 +1,2 @@\n-Starter plan is $10 per seat monthly\n+Starter plan is $15 per seat monthly"
+        before, after = ul.extract_highlights(diff)
+        self.assertEqual(before, ["Starter plan is $10 per seat monthly"])
+        self.assertEqual(after, ["Starter plan is $15 per seat monthly"])
+
+        cfg = ul.load_json(ROOT / "data" / "config.json", {})
+        entry = {
+            "slug": "example-pricing",
+            "name": "Example Pricing",
+            "file": "changes/example-pricing-2026-11-26.html",
+            "timestamp_b": "2026-11-26T13:00:00+00:00",
+            "summary": ul.summarize_diff(diff, "Example Pricing", date_b="2026-11-26", changed_lines=2),
+        }
+        post = ul.build_bluesky_post(entry, cfg)
+        self.assertLessEqual(len(post["text"]), 300)
+        facet = post["facets"][0]
+        raw_bytes = post["text"].encode("utf-8")
+        sliced = raw_bytes[facet["index"]["byteStart"]:facet["index"]["byteEnd"]].decode("utf-8")
+        self.assertEqual(sliced, "https://rcarloc.github.io/histdiff-ledger-v02/changes/example-pricing-2026-11-26.html")
 
 
 if __name__ == "__main__":

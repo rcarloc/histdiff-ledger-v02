@@ -32,6 +32,9 @@ jobs:
         run: python scripts/update_ledger.py --sync-candidates
 
       - name: Check watched pages and rebuild ledger
+        env:
+          BSKY_HANDLE: ${{ secrets.BSKY_HANDLE }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
         run: python scripts/update_ledger.py
 
       - name: Run ledger tests

@@ -9,6 +9,7 @@ from html import escape
 from html.parser import HTMLParser
 import ipaddress
 import json
+import os
 from pathlib import Path
 import re
 import socket
@@ -282,28 +283,105 @@ def evaluate_diff(old_text: str, new_text: str) -> dict | None:
     }
 
 
-def summarize_diff(unified_diff: str, name: str) -> str:
-    adds, dels = [], []
+def extract_highlights(unified_diff: str, limit: int = 3) -> tuple[list[str], list[str]]:
+    """Extract top substantive removed (before) and added (after) lines for answer-first GEO."""
+    before: list[str] = []
+    after: list[str] = []
     for ln in unified_diff.splitlines():
-        if ln.startswith("+") and not ln.startswith("+++"):
-            txt = ln[1:].strip()
-            if len(txt) >= 12:
-                adds.append(txt)
-        elif ln.startswith("-") and not ln.startswith("---"):
-            txt = ln[1:].strip()
-            if len(txt) >= 12:
-                dels.append(txt)
-    if adds:
-        snippet = adds[0][:115].rstrip()
-        if len(adds[0]) > 115:
-            snippet += "…"
-        return f'Updated text includes: "{snippet}"'
-    if dels:
-        snippet = dels[0][:115].rstrip()
-        if len(dels[0]) > 115:
-            snippet += "…"
-        return f'Removed text from {name}: "{snippet}"'
+        if ln.startswith("---") or ln.startswith("+++") or ln.startswith("@@"):
+            continue
+        if ln.startswith("-"):
+            txt = ln[1:].strip().lstrip("#- ").strip()
+            if len(txt) >= 12 and txt not in before:
+                before.append(txt[:180])
+        elif ln.startswith("+"):
+            txt = ln[1:].strip().lstrip("#- ").strip()
+            if len(txt) >= 12 and txt not in after:
+                after.append(txt[:180])
+    return before[:limit], after[:limit]
+
+
+def summarize_diff(unified_diff: str, name: str, date_b: str = "", changed_lines: int = 0) -> str:
+    before, after = extract_highlights(unified_diff, limit=1)
+    prefix = f"On {date_b}, {name}" if date_b else name
+    if before and after:
+        return f'{prefix} changed wording from "{before[0][:90]}" to "{after[0][:90]}".'
+    if after:
+        return f'{prefix} added: "{after[0][:115]}".'
+    if before:
+        return f'{prefix} removed: "{before[0][:115]}".'
+    if changed_lines:
+        return f"{prefix} updated {changed_lines} lines of page text."
     return f"Detected substantive wording update on {name}."
+
+
+def build_bluesky_post(entry: dict, cfg: dict) -> dict:
+    """Build an AT Protocol app.bsky.feed.post payload (<=300 chars) with UTF-8 byte link facets."""
+    base = cfg["base_url"].rstrip("/")
+    receipt_url = f'{base}/{entry["file"]}'
+    headline = f'{entry["name"]} changed ({entry["timestamp_b"][:10]}): {entry["summary"]}'
+    max_head = max(40, 295 - len(receipt_url) - 2)
+    if len(headline) > max_head:
+        headline = headline[: max_head - 1].rstrip() + "…"
+    text = f"{headline}\n{receipt_url}"
+    byte_start = len((headline + "\n").encode("utf-8"))
+    byte_end = byte_start + len(receipt_url.encode("utf-8"))
+    return {
+        "$type": "app.bsky.feed.post",
+        "text": text,
+        "createdAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "facets": [
+            {
+                "index": {"byteStart": byte_start, "byteEnd": byte_end},
+                "features": [{"$type": "app.bsky.richtext.facet#link", "uri": receipt_url}],
+            }
+        ],
+        "embed": {
+            "$type": "app.bsky.embed.external",
+            "external": {
+                "uri": receipt_url,
+                "title": f'{entry["name"]} change ({entry["timestamp_b"][:10]}) · histdiff',
+                "description": entry["summary"][:240],
+            },
+        },
+    }
+
+
+def post_to_bluesky(entry: dict, cfg: dict) -> bool:
+    """Best-effort Bluesky auto-post when BSKY_HANDLE and BSKY_APP_PASSWORD are set."""
+    handle = os.environ.get("BSKY_HANDLE", "").strip()
+    password = os.environ.get("BSKY_APP_PASSWORD", "").strip()
+    if not handle or not password:
+        return False
+    try:
+        sess_req = Request(
+            "https://bsky.social/xrpc/com.atproto.server.createSession",
+            data=json.dumps({"identifier": handle, "password": password}).encode("utf-8"),
+            headers={"Content-Type": "application/json", "User-Agent": USER_AGENT},
+            method="POST",
+        )
+        with urlopen(sess_req, timeout=12) as resp:
+            sess = json.loads(resp.read().decode("utf-8"))
+        post_record = build_bluesky_post(entry, cfg)
+        rec_req = Request(
+            "https://bsky.social/xrpc/com.atproto.repo.createRecord",
+            data=json.dumps({
+                "repo": sess["did"],
+                "collection": "app.bsky.feed.post",
+                "record": post_record,
+            }).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f'Bearer {sess["accessJwt"]}',
+                "User-Agent": USER_AGENT,
+            },
+            method="POST",
+        )
+        with urlopen(rec_req, timeout=12) as resp:
+            return 200 <= resp.status < 300
+    except Exception as exc:
+        print(f"Bluesky post skipped/failed for {entry['slug']}: {type(exc).__name__}: {exc}")
+        return False
 
 
 def is_safe_public_url(url: str) -> tuple[bool, str]:
@@ -509,10 +587,24 @@ def render_fresh_change_page(entry: dict, cfg: dict) -> str:
     cap_a = f'<a href="{escape(wb_a["archive_url"], quote=True)}">{escape(entry["timestamp_a"])} (Wayback ↗)</a><code>SHA256 {escape(entry["sha256_a"][:24])}… · CDX {escape(wb_a["cdx_digest"])}</code>' if wb_a else f'<span>{escape(entry["timestamp_a"])}</span><code>SHA256 {escape(entry["sha256_a"])}</code>'
     cap_b = f'<a href="{escape(wb_b["archive_url"], quote=True)}">{escape(entry["timestamp_b"])} (Wayback ↗)</a><code>SHA256 {escape(entry["sha256_b"][:24])}… · CDX {escape(wb_b["cdx_digest"])}</code>' if wb_b else f'<span>{escape(entry["timestamp_b"])}</span><code>SHA256 {escape(entry["sha256_b"])}</code>'
 
+    before_lines, after_lines = extract_highlights(entry["unified_diff"], limit=3)
+    before_html = "".join(f"<li><del>{escape(b)}</del></li>" for b in before_lines) or "<li><em>No major lines removed</em></li>"
+    after_html = "".join(f"<li><ins>{escape(a)}</ins></li>" for a in after_lines) or "<li><em>No major lines added</em></li>"
+    answer_box = (
+        f'<section class="answer-box">'
+        f'<h2>What changed on {escape(name)} ({date_b})?</h2>'
+        f'<p>{escape(summary)} Captured between {date_a} and {date_b} ({entry["change_ratio"]:.1%} of lines changed).</p>'
+        f'<div class="before-after">'
+        f'<div><strong>Before ({date_a})</strong><ul>{before_html}</ul></div>'
+        f'<div><strong>After ({date_b})</strong><ul>{after_html}</ul></div>'
+        f'</div></section>\n'
+    )
+
     body = (
         f'<main class="detail"><div class="hero"><a href="../index.html">← Change ledger</a>\n'
         f'<h1>{escape(name)}</h1><p>{escape(summary)}</p></div>'
         f'<p><a href="{escape(url, quote=True)}">{escape(url)}</a></p>\n'
+        f'{answer_box}'
         f'<div class="actions"><a class="cta" href="{escape(deep_url, quote=True)}">Compare in Apify ↗</a>'
         f'<a class="cta-secondary" href="{escape(issue_suggest_url(cfg), quote=True)}">Suggest a page to watch ↗</a></div>\n'
         f'<details><summary>Reproduce with HistDiff on Apify</summary><p>In Apify, open Input → JSON and paste this input.</p>'
@@ -523,14 +615,29 @@ def render_fresh_change_page(entry: dict, cfg: dict) -> str:
         f'<details class="diff" open><summary>Full detected diff</summary><pre>{"".join(lines)}</pre></details></main>\n'
     )
     based_on = [x["archive_url"] for x in (wb_a, wb_b) if x] or [url]
+    faq_answer = f"{summary} Source URL: {url}. Compared snapshots from {date_a} to {date_b} ({entry['change_ratio']:.1%} lines changed)."
     schema = {
-        "@type": "Article",
-        "headline": f"{name} detected page change ({date_b})",
-        "description": summary,
-        "about": url,
-        "datePublished": entry["timestamp_b"],
-        "temporalCoverage": f"{date_a}/{date_b}",
-        "isBasedOn": based_on,
+        "@graph": [
+            {
+                "@type": "Article",
+                "headline": f"{name} detected page change ({date_b})",
+                "description": summary,
+                "about": url,
+                "datePublished": entry["timestamp_b"],
+                "temporalCoverage": f"{date_a}/{date_b}",
+                "isBasedOn": based_on,
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": f"What changed on {name} on {date_b}?",
+                        "acceptedAnswer": {"@type": "Answer", "text": faq_answer},
+                    }
+                ],
+            },
+        ]
     }
     return render_page_shell(
         f"{name} change ({date_b})",
@@ -855,6 +962,7 @@ def run_daily_check(cfg: dict) -> None:
     ok_count = 0
     failed_count = 0
     new_urls: list[str] = []
+    new_entries: list[dict] = []
 
     for item in watchlist:
         slug = item["slug"]
@@ -888,7 +996,7 @@ def run_daily_check(cfg: dict) -> None:
                     "category": item.get("category", "Docs/Pricing"),
                     "url": item["url"],
                     "file": rel_file,
-                    "summary": summarize_diff(diff["unified_diff"], item["name"]),
+                    "summary": summarize_diff(diff["unified_diff"], item["name"], date_b=today, changed_lines=diff["changed_lines"]),
                     "timestamp_a": prev["fetched_utc"],
                     "timestamp_b": now,
                     "sha256_a": prev["sha256"],
@@ -901,6 +1009,7 @@ def run_daily_check(cfg: dict) -> None:
                 }
                 fresh.insert(0, entry)
                 seen_keys.add((slug, new_hash))
+                new_entries.append(entry)
                 new_urls.append(f'{cfg["base_url"].rstrip("/")}/{rel_file}')
                 save_json(snap_path, {
                     "slug": slug, "name": item["name"], "url": item["url"],
@@ -927,6 +1036,10 @@ def run_daily_check(cfg: dict) -> None:
     if new_urls:
         pinged = submit_indexnow(cfg, new_urls + [f'{cfg["base_url"].rstrip("/")}/', f'{cfg["base_url"].rstrip("/")}/feed.xml'])
         print(f"IndexNow pinged for {len(new_urls)} new pages: {pinged}")
+        for ne in new_entries[:3]:
+            posted = post_to_bluesky(ne, cfg)
+            if posted:
+                print(f"Bluesky posted: {ne['slug']}")
     print(f"Check complete: ok={ok_count}, failed={failed_count}, new_changes={len(new_urls)}")
 
 
