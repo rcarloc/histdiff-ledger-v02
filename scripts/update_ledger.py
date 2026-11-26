@@ -42,6 +42,10 @@ VOLATILE_LINE_RE = re.compile(
     re.IGNORECASE,
 )
 
+SECRET_TOKEN_RE = re.compile(
+    r"\b(?:pscale_(?:pw|tkn)_[A-Za-z0-9_=-]{8,}|gh[pousr]_[A-Za-z0-9]{20,}|sk_(?:live|test)_[A-Za-z0-9]{16,}|AKIA[0-9A-Z]{16})\b"
+)
+
 CURATED_RECORDS = [
     ("Zoom", "zoom.html", "Feb 2019 → Jul 2020", "2019-02-17 to 2020-07-01", "The plan comparison changed the listed participant allowance from 100 to 300."),
     ("Slack", "slack.html", "Jun 2023 → Dec 2023", "2023-06-30 to 2023-12-15", "The later capture lists unlimited workflows and app integrations."),
@@ -102,7 +106,6 @@ CANDIDATE_WATCHLIST = [
     {"slug": "auth0-pricing", "name": "Auth0 Pricing", "category": "Dev Pricing", "url": "https://auth0.com/pricing"},
     {"slug": "upstash-pricing", "name": "Upstash Pricing", "category": "Dev Pricing", "url": "https://upstash.com/pricing"},
     {"slug": "turso-pricing", "name": "Turso Pricing", "category": "Dev Pricing", "url": "https://turso.tech/pricing"},
-    {"slug": "planetscale-pricing", "name": "PlanetScale Pricing", "category": "Dev Pricing", "url": "https://planetscale.com/pricing"},
     {"slug": "neon-pricing", "name": "Neon Pricing", "category": "Dev Pricing", "url": "https://neon.tech/pricing"},
     {"slug": "resend-pricing", "name": "Resend Pricing", "category": "Dev Pricing", "url": "https://resend.com/pricing"},
     {"slug": "posthog-pricing", "name": "PostHog Pricing", "category": "Dev Pricing", "url": "https://posthog.com/pricing"},
@@ -214,14 +217,18 @@ class TextExtractor(HTMLParser):
 
     def get_text(self) -> str:
         raw_tokens = self._main_tokens if (self._has_main and len(" ".join(self._main_tokens).split()) >= MIN_WORDS) else (self._tokens + self._main_tokens)
-        raw = "".join(raw_tokens).translate(TYPOGRAPHY_TRANS)
-        lines: list[str] = []
-        for line in raw.splitlines():
-            norm = re.sub(r"\s+", " ", line).strip(" |")
-            norm = re.sub(r"\s*\|\s*", " | ", norm)
-            if norm and not VOLATILE_LINE_RE.match(norm):
-                lines.append(norm)
-        return "\n".join(lines)
+        return normalize_text("".join(raw_tokens))
+
+
+def normalize_text(raw: str) -> str:
+    raw = SECRET_TOKEN_RE.sub("[REDACTED_TOKEN]", raw.translate(TYPOGRAPHY_TRANS))
+    lines: list[str] = []
+    for line in raw.splitlines():
+        norm = re.sub(r"\s+", " ", line).strip(" |")
+        norm = re.sub(r"\s*\|\s*", " | ", norm)
+        if norm and not VOLATILE_LINE_RE.match(norm):
+            lines.append(norm)
+    return "\n".join(lines)
 
 
 def extract_text(html_body: str) -> str:
@@ -248,6 +255,8 @@ def is_blocked_or_junk(text: str) -> bool:
 
 def evaluate_diff(old_text: str, new_text: str) -> dict | None:
     """Return diff metrics if change is meaningful and non-junk, else None."""
+    old_text = normalize_text(old_text)
+    new_text = normalize_text(new_text)
     if is_blocked_or_junk(new_text) or is_blocked_or_junk(old_text):
         return None
     if sha256_text(old_text) == sha256_text(new_text):

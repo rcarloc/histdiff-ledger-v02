@@ -35,6 +35,13 @@ class LedgerTests(unittest.TestCase):
         b = ul.extract_text(f"<main><p>It\u2019s a test \u2014 plan pricing.</p>{pad}</main>")
         self.assertIsNone(ul.evaluate_diff(a, b))
 
+    def test_secret_tokens_are_redacted(self) -> None:
+        pad = " ".join(["documentation"] * 90)
+        fake_pw = "pscale_pw_" + "AbCdEfGh12345678"
+        text = ul.extract_text(f"<main><p>Example password {fake_pw}</p><p>{pad}</p></main>")
+        self.assertNotIn(fake_pw, text)
+        self.assertIn("[REDACTED_TOKEN]", text)
+
     def test_ssrf_guard_blocks_unsafe_urls(self) -> None:
         for bad_url in (
             "http://example.com/pricing",
