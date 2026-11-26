@@ -4,5 +4,26 @@
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/feed.xml" rel="self"/>
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/"/>
   <id>https://rcarloc.github.io/histdiff-ledger-v02/</id>
-  <updated>2026-11-26T04:13:05+00:00</updated>
+  <updated>2026-11-26T04:28:51+00:00</updated>
+  <entry>
+    <title>Slack Pricing changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/slack-pricing-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/slack-pricing-2026-11-26.html</id>
+    <updated>2026-11-26T04:28:51+00:00</updated>
+    <summary>Updated text includes: &quot;per user / month, when paying annually&quot;</summary>
+  </entry>
+  <entry>
+    <title>Stripe Pricing changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/stripe-pricing-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/stripe-pricing-2026-11-26.html</id>
+    <updated>2026-11-26T04:28:51+00:00</updated>
+    <summary>Updated text includes: &quot;Buy, sell, or build with agents&quot;</summary>
+  </entry>
+  <entry>
+    <title>Anthropic Terms changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/anthropic-terms-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/anthropic-terms-2026-11-26.html</id>
+    <updated>2026-11-26T04:28:51+00:00</updated>
+    <summary>Updated text includes: &quot;These Terms of Service (“ Terms ”) govern your use of Claude.ai, Claude Pro, and other products and services that w…&quot;</summary>
+  </entry>
 </feed>
