@@ -4,9 +4,7 @@
 
 ## Fresh detected changes
 
-- [Slack Pricing](changes/slack-pricing-2026-11-26.html) — 2026-11-26 to 2026-11-26. Updated text includes: "per user / month, when paying annually"
-- [Stripe Pricing](changes/stripe-pricing-2026-11-26.html) — 2026-11-26 to 2026-11-26. Updated text includes: "Buy, sell, or build with agents"
-- [Anthropic Terms](changes/anthropic-terms-2026-11-26.html) — 2026-11-26 to 2026-11-26. Updated text includes: "These Terms of Service (“ Terms ”) govern your use of Claude.ai, Claude Pro, and other products and services that w…"
+- No substantive changes detected yet since watchlist initialization.
 
 ## Archived proof examples
 
