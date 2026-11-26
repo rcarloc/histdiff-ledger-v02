@@ -4,7 +4,142 @@
 
 ## Fresh detected changes
 
-No substantive fresh changes published yet.
+### Upstash Pricing (2026-11-26 to 2026-11-26)
+- URL: https://upstash.com/pricing
+- Receipt: changes/upstash-pricing-2026-11-26.html
+- Summary: On 2026-11-26, Upstash Pricing changed wording from "If your usage exceeds the budget cap, your database will be rate limited and your total co" to "If your usage exceeds the budget cap, your total cost will not exceed the chosen budget. F".
+
+```diff
+--- a
++++ b
+@@ -127,5 +127,5 @@
+ Budget is only available for the pay-as-you-go plan.
+ You can set a maximum monthly budget for your database so you won't be charged beyond that limit. We send email notifications when you reach 70% and 90% of your monthly budget so you can adjust the limit or upgrade to a Fixed plan.
+-If your usage exceeds the budget cap, your database will be rate limited and your total cost will not exceed the chosen budget.
++If your usage exceeds the budget cap, your total cost will not exceed the chosen budget. For budgets under $1,000 the database is also rate limited.
+ If you change from a Fixed plan to pay-as-you-go mid-month, your budget only tracks your pay-as-you-go spending.
+ ### Do Fixed plans have command count pricing or limits?
+@@ -165,5 +165,5 @@
+ Bandwidth pricing depends on the cloud provider's traffic fees, so it may change over time. If it changes, we will notify you by email.
+ ### Can I purchase Prod Pack for any plan?
+-Yes. You can purchase Prod Pack for any plan except the Free tier. You can enable it from your Upstash dashboard database details page.
++Yes. You can purchase Prod Pack for any paid plan (Pay as You Go or Fixed) on a global database. You can enable it from your Upstash dashboard database details page.
+ ### What is included in Prod Pack?
+ Prod Pack includes uptime SLA, SOC 2 Type 2 report, advanced monitoring with Prometheus, Grafana, and Datadog, Insights in the console, multi-zone high availability, and encryption at rest.
+```
+
+### Clerk Pricing (2026-11-26 to 2026-11-26)
+- URL: https://clerk.com/pricing
+- Receipt: changes/clerk-pricing-2026-11-26.html
+- Summary: On 2026-11-26, Clerk Pricing changed wording from "All features included for subscription billing (usage and per seat billing coming soon)" to "All features included for subscription billing, including per-seat plans (usage-based bill".
+
+```diff
+--- a
++++ b
+@@ -191,5 +191,5 @@
+ Stripe 2.9% + Stripe transaction charge $0.30 + Clerk Billing 0.7%
+ -
+-All features included for subscription billing (usage and per seat billing coming soon)
++All features included for subscription billing, including per-seat plans (usage-based billing coming soon)
+ -
+ No payment integration code, UI work, or webhook management required.
+@@ -461,5 +461,5 @@
+ Included | Included
+ Custom roles and role sets
+-Create unlimited custom roles and organize them into RoleSets for advanced access control hierarchies.
++Create up to 10 custom roles per instance (contact support for more) and organize them into RoleSets for advanced access control hierarchies.
+ Not included | Included
+ Auto join / request to join
+```
+
+### Together AI Pricing (2026-11-26 to 2026-11-26)
+- URL: https://www.together.ai/pricing
+- Receipt: changes/together-pricing-2026-11-26.html
+- Summary: On 2026-11-26, Together AI Pricing changed wording from "Displayed prices refer to the lowest resolution/duration settings. Actual prices might var" to "$0.075 (cached)".
+
+```diff
+--- a
++++ b
+@@ -57,5 +57,4 @@
+ Qwen3.8 Flash
+ $0.15
+-(cached)
+ $0.47
+ Muse Spark Open 816B A42B
+@@ -106,5 +105,4 @@
+ Tev1 4B Experimental
+ $0.042
+-(cached)
+ $0.00
+ DeepSeek V4 Pro 0813
+@@ -120,5 +118,4 @@
+ Qwen3.7-Plus
+ $0.32
+-(cached)
+ $1.28
+ GLM-5.2
+@@ -129,5 +126,4 @@
+ Ternary Bonsai 27B
+ Free
+-(cached)
+ Free
+ Kimi K3
+@@ -148,15 +144,11 @@
+ gpt-oss-120B
+ $0.15
+-(cached)
+ $0.60
+ Qwen3.5 9B
+ $0.17
+-(cached)
+ $0.25
+ Qwen3.6-Plus
+ $0.50
+-(cached)
+ $3.00
+-Displayed prices refer to the lowest resolution/duration settings. Actual prices might vary.
+ Price per 1M tokens
+ Model
+@@ -188,5 +180,5 @@
+ Qwen4 Max
+ $1.50
+-$0.0525 (cached)
++$0.075 (cached)
+ $4.50
+ Tencent Hy4
+@@ -406,4 +398,5 @@
+ Vidu Q1
+ $0.22
++Displayed prices refer to the lowest resolution/duration settings. Actual prices might vary.
+ Price per audio minute
+ Batch API price
+@@ -568,5 +561,5 @@
+ Code Interpreter
+ Execute LLM-generated code securely using our API.
+-Duration?
++Duration
+ Price/Session
+ Session (60 minutes)
+```
+
+### Fly.io Pricing (2026-11-26 to 2026-11-26)
+- URL: https://fly.io/docs/about/pricing/
+- Receipt: changes/fly-pricing-2026-11-26.html
+- Summary: On 2026-11-26, Fly.io Pricing removed: "Unsupported Products".
+
+```diff
+--- a
++++ b
+@@ -164,7 +164,4 @@
+ - IP addresses associated with the service
+ You will be billed separately for data transfer to these external third-party services, including Tigris Object Storage. See our data transfer pricing for details.
+-## Unsupported Products
+-### Unmanaged Fly Postgres (Unsupported)
+-Fly Postgres is a PostgreSQL database that you create and then manage yourself. Fly Postgres clusters are Fly Apps that consist of Machines, volumes, and any configured extra memory. The Machine price and volume price for Fly Postgres are the same as any other Machine and volume you'd run on Fly.io. Assuming the Machines are running all the time, the cost for the preset configurations is about $2/month for a single node cluster for dev projects and from about $82 to $164/month for a three-node production cluster. You don't need to keep the preset configurations, you can scale your Fly Postgres Machines to suit your workload at any time.
+ ## Legacy plans
+ On a legacy plan and wondering what that includes? Read more about Discontinued Plans .
+```
+
 
 ## Archived proof examples
 

@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "slug": "upstash-pricing",
+    "name": "Upstash Pricing",
+    "category": "Dev Pricing",
+    "url": "https://upstash.com/pricing",
+    "file": "changes/upstash-pricing-2026-11-26.html",
+    "summary": "On 2026-11-26, Upstash Pricing changed wording from \"If your usage exceeds the budget cap, your database will be rate limited and your total co\" to \"If your usage exceeds the budget cap, your total cost will not exceed the chosen budget. F\".",
+    "timestamp_a": "2026-11-26T05:04:26+00:00",
+    "timestamp_b": "2026-11-26T22:05:44+00:00",
+    "sha256_a": "13fe2d9347eb12649b63223f2bbc8d45b039eb8c17b1fe2c839944743b04f5cf",
+    "sha256_b": "891ff4a2fbfeb9d3dfc6aab5f6a47e3392445604f80db7f1c7f4ab6b7e44fc0f",
+    "wayback_a": null,
+    "wayback_b": {
+      "timestamp": "20260705151239",
+      "archive_url": "https://web.archive.org/web/20260705151239id_/https://upstash.com/pricing",
+      "cdx_digest": "6OMQMVKYMIM76JSL5FPDDPAEYBNJH7R3"
+    },
+    "word_count_b": 2118,
+    "change_ratio": 0.0187,
+    "unified_diff": "--- a\n+++ b\n@@ -127,5 +127,5 @@\n Budget is only available for the pay-as-you-go plan.\n You can set a maximum monthly budget for your database so you won't be charged beyond that limit. We send email notifications when you reach 70% and 90% of your monthly budget so you can adjust the limit or upgrade to a Fixed plan.\n-If your usage exceeds the budget cap, your database will be rate limited and your total cost will not exceed the chosen budget.\n+If your usage exceeds the budget cap, your total cost will not exceed the chosen budget. For budgets under $1,000 the database is also rate limited.\n If you change from a Fixed plan to pay-as-you-go mid-month, your budget only tracks your pay-as-you-go spending.\n ### Do Fixed plans have command count pricing or limits?\n@@ -165,5 +165,5 @@\n Bandwidth pricing depends on the cloud provider's traffic fees, so it may change over time. If it changes, we will notify you by email.\n ### Can I purchase Prod Pack for any plan?\n-Yes. You can purchase Prod Pack for any plan except the Free tier. You can enable it from your Upstash dashboard database details page.\n+Yes. You can purchase Prod Pack for any paid plan (Pay as You Go or Fixed) on a global database. You can enable it from your Upstash dashboard database details page.\n ### What is included in Prod Pack?\n Prod Pack includes uptime SLA, SOC 2 Type 2 report, advanced monitoring with Prometheus, Grafana, and Datadog, Insights in the console, multi-zone high availability, and encryption at rest."
+  },
+  {
+    "slug": "clerk-pricing",
+    "name": "Clerk Pricing",
+    "category": "Dev Pricing",
+    "url": "https://clerk.com/pricing",
+    "file": "changes/clerk-pricing-2026-11-26.html",
+    "summary": "On 2026-11-26, Clerk Pricing changed wording from \"All features included for subscription billing (usage and per seat billing coming soon)\" to \"All features included for subscription billing, including per-seat plans (usage-based bill\".",
+    "timestamp_a": "2026-11-26T05:04:26+00:00",
+    "timestamp_b": "2026-11-26T22:05:44+00:00",
+    "sha256_a": "35b1d894ad5f518281b306f4f4396b1bea8bfa48bfd2a0e3e06daf2318d8f99a",
+    "sha256_b": "8526fe34b752c4a95fe2f75bac7489e0c5c4f8d0cb19e1d00640bc0ee7db6b2c",
+    "wayback_a": null,
+    "wayback_b": {
+      "timestamp": "20261114142359",
+      "archive_url": "https://web.archive.org/web/20261114142359id_/https://clerk.com/pricing",
+      "cdx_digest": "XD4C6DH6UWRW3RYOE6SZWSAY3MHUD22F"
+    },
+    "word_count_b": 3207,
+    "change_ratio": 0.0078,
+    "unified_diff": "--- a\n+++ b\n@@ -191,5 +191,5 @@\n Stripe 2.9% + Stripe transaction charge $0.30 + Clerk Billing 0.7%\n -\n-All features included for subscription billing (usage and per seat billing coming soon)\n+All features included for subscription billing, including per-seat plans (usage-based billing coming soon)\n -\n No payment integration code, UI work, or webhook management required.\n@@ -461,5 +461,5 @@\n Included | Included\n Custom roles and role sets\n-Create unlimited custom roles and organize them into RoleSets for advanced access control hierarchies.\n+Create up to 10 custom roles per instance (contact support for more) and organize them into RoleSets for advanced access control hierarchies.\n Not included | Included\n Auto join / request to join"
+  },
+  {
+    "slug": "together-pricing",
+    "name": "Together AI Pricing",
+    "category": "AI Pricing",
+    "url": "https://www.together.ai/pricing",
+    "file": "changes/together-pricing-2026-11-26.html",
+    "summary": "On 2026-11-26, Together AI Pricing changed wording from \"Displayed prices refer to the lowest resolution/duration settings. Actual prices might var\" to \"$0.075 (cached)\".",
+    "timestamp_a": "2026-11-26T05:04:26+00:00",
+    "timestamp_b": "2026-11-26T22:05:44+00:00",
+    "sha256_a": "53321f29f5a57982f97733e0507dd4be3caec511b9f70392d27a6014a3b533e5",
+    "sha256_b": "4c85f9ba7501f1732a7921ce329e62adaca3fbf3d83df0a54108b74a3f62b908",
+    "wayback_a": null,
+    "wayback_b": {
+      "timestamp": "20261125065612",
+      "archive_url": "https://web.archive.org/web/20261125065612id_/https://www.together.ai/pricing",
+      "cdx_digest": "DXZVZXBK3SIXHJ67UDTY3NV6G3GCJQPA"
+    },
+    "word_count_b": 1542,
+    "change_ratio": 0.0169,
+    "unified_diff": "--- a\n+++ b\n@@ -57,5 +57,4 @@\n Qwen3.8 Flash\n $0.15\n-(cached)\n $0.47\n Muse Spark Open 816B A42B\n@@ -106,5 +105,4 @@\n Tev1 4B Experimental\n $0.042\n-(cached)\n $0.00\n DeepSeek V4 Pro 0813\n@@ -120,5 +118,4 @@\n Qwen3.7-Plus\n $0.32\n-(cached)\n $1.28\n GLM-5.2\n@@ -129,5 +126,4 @@\n Ternary Bonsai 27B\n Free\n-(cached)\n Free\n Kimi K3\n@@ -148,15 +144,11 @@\n gpt-oss-120B\n $0.15\n-(cached)\n $0.60\n Qwen3.5 9B\n $0.17\n-(cached)\n $0.25\n Qwen3.6-Plus\n $0.50\n-(cached)\n $3.00\n-Displayed prices refer to the lowest resolution/duration settings. Actual prices might vary.\n Price per 1M tokens\n Model\n@@ -188,5 +180,5 @@\n Qwen4 Max\n $1.50\n-$0.0525 (cached)\n+$0.075 (cached)\n $4.50\n Tencent Hy4\n@@ -406,4 +398,5 @@\n Vidu Q1\n $0.22\n+Displayed prices refer to the lowest resolution/duration settings. Actual prices might vary.\n Price per audio minute\n Batch API price\n@@ -568,5 +561,5 @@\n Code Interpreter\n Execute LLM-generated code securely using our API.\n-Duration?\n+Duration\n Price/Session\n Session (60 minutes)"
+  },
+  {
+    "slug": "fly-pricing",
+    "name": "Fly.io Pricing",
+    "category": "Dev Pricing",
+    "url": "https://fly.io/docs/about/pricing/",
+    "file": "changes/fly-pricing-2026-11-26.html",
+    "summary": "On 2026-11-26, Fly.io Pricing removed: \"Unsupported Products\".",
+    "timestamp_a": "2026-11-26T04:13:05+00:00",
+    "timestamp_b": "2026-11-26T22:05:44+00:00",
+    "sha256_a": "5119dd665548a2c9f7aa1088feaff2e8b480996bf2582c38ccce7a226a6286a3",
+    "sha256_b": "d896a52b12596adf2d84fae85b8359a6e3b64fc389151dc71e61aafd035f0ace",
+    "wayback_a": null,
+    "wayback_b": {
+      "timestamp": "20260917184311",
+      "archive_url": "https://web.archive.org/web/20260917184311id_/https://fly.io/docs/about/pricing/",
+      "cdx_digest": "CSWQXVNPSDLOU7JCZKGCLSYJOF7G2ZB3"
+    },
+    "word_count_b": 3337,
+    "change_ratio": 0.0169,
+    "unified_diff": "--- a\n+++ b\n@@ -164,7 +164,4 @@\n - IP addresses associated with the service\n You will be billed separately for data transfer to these external third-party services, including Tigris Object Storage. See our data transfer pricing for details.\n-## Unsupported Products\n-### Unmanaged Fly Postgres (Unsupported)\n-Fly Postgres is a PostgreSQL database that you create and then manage yourself. Fly Postgres clusters are Fly Apps that consist of Machines, volumes, and any configured extra memory. The Machine price and volume price for Fly Postgres are the same as any other Machine and volume you'd run on Fly.io. Assuming the Machines are running all the time, the cost for the preset configurations is about $2/month for a single node cluster for dev projects and from about $82 to $164/month for a three-node production cluster. You don't need to keep the preset configurations, you can scale your Fly Postgres Machines to suit your workload at any time.\n ## Legacy plans\n On a legacy plan and wondering what that includes? Read more about Discontinued Plans ."
+  }
+]

@@ -4,5 +4,33 @@
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/feed.xml" rel="self"/>
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/"/>
   <id>https://rcarloc.github.io/histdiff-ledger-v02/</id>
-  <updated>2026-11-26T05:04:34+00:00</updated>
+  <updated>2026-11-26T22:05:44+00:00</updated>
+  <entry>
+    <title>Upstash Pricing changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/upstash-pricing-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/upstash-pricing-2026-11-26.html</id>
+    <updated>2026-11-26T22:05:44+00:00</updated>
+    <summary>On 2026-11-26, Upstash Pricing changed wording from &quot;If your usage exceeds the budget cap, your database will be rate limited and your total co&quot; to &quot;If your usage exceeds the budget cap, your total cost will not exceed the chosen budget. F&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Clerk Pricing changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/clerk-pricing-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/clerk-pricing-2026-11-26.html</id>
+    <updated>2026-11-26T22:05:44+00:00</updated>
+    <summary>On 2026-11-26, Clerk Pricing changed wording from &quot;All features included for subscription billing (usage and per seat billing coming soon)&quot; to &quot;All features included for subscription billing, including per-seat plans (usage-based bill&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Together AI Pricing changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/together-pricing-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/together-pricing-2026-11-26.html</id>
+    <updated>2026-11-26T22:05:44+00:00</updated>
+    <summary>On 2026-11-26, Together AI Pricing changed wording from &quot;Displayed prices refer to the lowest resolution/duration settings. Actual prices might var&quot; to &quot;$0.075 (cached)&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Fly.io Pricing changed (2026-11-26)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/fly-pricing-2026-11-26.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/fly-pricing-2026-11-26.html</id>
+    <updated>2026-11-26T22:05:44+00:00</updated>
+    <summary>On 2026-11-26, Fly.io Pricing removed: &quot;Unsupported Products&quot;.</summary>
+  </entry>
 </feed>

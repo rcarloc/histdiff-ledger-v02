@@ -9,7 +9,10 @@
 
 ## Fresh detected changes
 
-- No substantive changes detected yet since watchlist initialization.
+- [Upstash Pricing](changes/upstash-pricing-2026-11-26.html) — 2026-11-26 to 2026-11-26. On 2026-11-26, Upstash Pricing changed wording from "If your usage exceeds the budget cap, your database will be rate limited and your total co" to "If your usage exceeds the budget cap, your total cost will not exceed the chosen budget. F".
+- [Clerk Pricing](changes/clerk-pricing-2026-11-26.html) — 2026-11-26 to 2026-11-26. On 2026-11-26, Clerk Pricing changed wording from "All features included for subscription billing (usage and per seat billing coming soon)" to "All features included for subscription billing, including per-seat plans (usage-based bill".
+- [Together AI Pricing](changes/together-pricing-2026-11-26.html) — 2026-11-26 to 2026-11-26. On 2026-11-26, Together AI Pricing changed wording from "Displayed prices refer to the lowest resolution/duration settings. Actual prices might var" to "$0.075 (cached)".
+- [Fly.io Pricing](changes/fly-pricing-2026-11-26.html) — 2026-11-26 to 2026-11-26. On 2026-11-26, Fly.io Pricing removed: "Unsupported Products".
 
 ## Archived proof examples
 
