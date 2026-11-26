@@ -21,7 +21,7 @@ No substantive fresh changes published yet.
 - [Notion](notion.html) — 2023-12-22 to 2025-12-10. The AI add-on FAQ gives way to a plan comparison that lists a Notion AI trial.
 - [Discord](discord.html) — 2024-01-01 to 2025-01-01. Discord shifted its homepage emphasis from topic-based communities toward gaming and group chat.
 
-## Monitored URLs (28)
+## Monitored URLs (50)
 
 - Anthropic Pricing (AI Pricing): https://www.anthropic.com/pricing
 - Anthropic Terms (AI Policy): https://www.anthropic.com/legal/consumer-terms
@@ -51,3 +51,25 @@ No substantive fresh changes published yet.
 - Sentry Pricing (Dev Pricing): https://sentry.io/pricing/
 - Python Status of Versions (Dev Docs): https://devguide.python.org/versions/
 - Kubernetes Deprecation Policy (Dev Docs): https://kubernetes.io/docs/reference/using-api/deprecation-policy/
+- Anthropic Release Notes (AI Docs): https://docs.anthropic.com/en/release-notes/overview
+- OpenAI Models Docs (AI Docs): https://platform.openai.com/docs/models
+- OpenAI Deprecations (AI Docs): https://platform.openai.com/docs/deprecations
+- Mistral AI Pricing (AI Pricing): https://mistral.ai/pricing
+- DeepSeek API Pricing (AI Pricing): https://api-docs.deepseek.com/quick_start/pricing
+- Groq Pricing (AI Pricing): https://groq.com/pricing/
+- Together AI Pricing (AI Pricing): https://www.together.ai/pricing
+- Cohere Pricing (AI Pricing): https://cohere.com/pricing
+- Cursor Pricing (AI Pricing): https://www.cursor.com/pricing
+- Stripe API Upgrades (Dev Docs): https://docs.stripe.com/upgrades
+- GitHub REST Rate Limits (Dev Docs): https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
+- Cloudflare R2 Pricing (Cloud Pricing): https://developers.cloudflare.com/r2/pricing/
+- Cloudflare D1 Pricing (Dev Pricing): https://developers.cloudflare.com/d1/platform/pricing/
+- Railway Pricing (Dev Pricing): https://railway.com/pricing
+- DigitalOcean Pricing (Cloud Pricing): https://www.digitalocean.com/pricing
+- Tailscale Pricing (Dev Pricing): https://tailscale.com/pricing
+- Clerk Pricing (Dev Pricing): https://clerk.com/pricing
+- Auth0 Pricing (Dev Pricing): https://auth0.com/pricing
+- Upstash Pricing (Dev Pricing): https://upstash.com/pricing
+- Turso Pricing (Dev Pricing): https://turso.tech/pricing
+- Docker Pricing (Dev Pricing): https://www.docker.com/pricing/
+- Docker Hub Usage Limits (Dev Docs): https://docs.docker.com/docker-hub/usage/

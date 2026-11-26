@@ -4,7 +4,7 @@
 
 ## Live watchlist
 
-- [Monitored Watchlist (28 pages)](watchlist.html) — Auto-checked twice daily.
+- [Monitored Watchlist (50 pages)](watchlist.html) — Auto-checked twice daily.
 - [Full diff index](llms-full.txt)
 
 ## Fresh detected changes

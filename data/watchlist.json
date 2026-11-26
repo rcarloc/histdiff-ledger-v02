@@ -166,5 +166,137 @@
     "name": "Kubernetes Deprecation Policy",
     "category": "Dev Docs",
     "url": "https://kubernetes.io/docs/reference/using-api/deprecation-policy/"
+  },
+  {
+    "slug": "anthropic-release-notes",
+    "name": "Anthropic Release Notes",
+    "category": "AI Docs",
+    "url": "https://docs.anthropic.com/en/release-notes/overview"
+  },
+  {
+    "slug": "openai-models",
+    "name": "OpenAI Models Docs",
+    "category": "AI Docs",
+    "url": "https://platform.openai.com/docs/models"
+  },
+  {
+    "slug": "openai-deprecations",
+    "name": "OpenAI Deprecations",
+    "category": "AI Docs",
+    "url": "https://platform.openai.com/docs/deprecations"
+  },
+  {
+    "slug": "mistral-pricing",
+    "name": "Mistral AI Pricing",
+    "category": "AI Pricing",
+    "url": "https://mistral.ai/pricing"
+  },
+  {
+    "slug": "deepseek-api-pricing",
+    "name": "DeepSeek API Pricing",
+    "category": "AI Pricing",
+    "url": "https://api-docs.deepseek.com/quick_start/pricing"
+  },
+  {
+    "slug": "groq-pricing",
+    "name": "Groq Pricing",
+    "category": "AI Pricing",
+    "url": "https://groq.com/pricing/"
+  },
+  {
+    "slug": "together-pricing",
+    "name": "Together AI Pricing",
+    "category": "AI Pricing",
+    "url": "https://www.together.ai/pricing"
+  },
+  {
+    "slug": "cohere-pricing",
+    "name": "Cohere Pricing",
+    "category": "AI Pricing",
+    "url": "https://cohere.com/pricing"
+  },
+  {
+    "slug": "cursor-pricing",
+    "name": "Cursor Pricing",
+    "category": "AI Pricing",
+    "url": "https://www.cursor.com/pricing"
+  },
+  {
+    "slug": "stripe-upgrades",
+    "name": "Stripe API Upgrades",
+    "category": "Dev Docs",
+    "url": "https://docs.stripe.com/upgrades"
+  },
+  {
+    "slug": "github-rest-rate-limits",
+    "name": "GitHub REST Rate Limits",
+    "category": "Dev Docs",
+    "url": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"
+  },
+  {
+    "slug": "cloudflare-r2-pricing",
+    "name": "Cloudflare R2 Pricing",
+    "category": "Cloud Pricing",
+    "url": "https://developers.cloudflare.com/r2/pricing/"
+  },
+  {
+    "slug": "cloudflare-d1-pricing",
+    "name": "Cloudflare D1 Pricing",
+    "category": "Dev Pricing",
+    "url": "https://developers.cloudflare.com/d1/platform/pricing/"
+  },
+  {
+    "slug": "railway-pricing",
+    "name": "Railway Pricing",
+    "category": "Dev Pricing",
+    "url": "https://railway.com/pricing"
+  },
+  {
+    "slug": "digitalocean-pricing",
+    "name": "DigitalOcean Pricing",
+    "category": "Cloud Pricing",
+    "url": "https://www.digitalocean.com/pricing"
+  },
+  {
+    "slug": "tailscale-pricing",
+    "name": "Tailscale Pricing",
+    "category": "Dev Pricing",
+    "url": "https://tailscale.com/pricing"
+  },
+  {
+    "slug": "clerk-pricing",
+    "name": "Clerk Pricing",
+    "category": "Dev Pricing",
+    "url": "https://clerk.com/pricing"
+  },
+  {
+    "slug": "auth0-pricing",
+    "name": "Auth0 Pricing",
+    "category": "Dev Pricing",
+    "url": "https://auth0.com/pricing"
+  },
+  {
+    "slug": "upstash-pricing",
+    "name": "Upstash Pricing",
+    "category": "Dev Pricing",
+    "url": "https://upstash.com/pricing"
+  },
+  {
+    "slug": "turso-pricing",
+    "name": "Turso Pricing",
+    "category": "Dev Pricing",
+    "url": "https://turso.tech/pricing"
+  },
+  {
+    "slug": "docker-hub-pricing",
+    "name": "Docker Pricing",
+    "category": "Dev Pricing",
+    "url": "https://www.docker.com/pricing/"
+  },
+  {
+    "slug": "docker-hub-limits",
+    "name": "Docker Hub Usage Limits",
+    "category": "Dev Docs",
+    "url": "https://docs.docker.com/docker-hub/usage/"
   }
 ]

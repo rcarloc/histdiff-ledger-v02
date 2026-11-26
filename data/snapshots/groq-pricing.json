@@ -1,0 +1,9 @@
+{
+  "slug": "groq-pricing",
+  "name": "Groq Pricing",
+  "url": "https://groq.com/pricing/",
+  "fetched_utc": "2026-11-26T05:04:26+00:00",
+  "sha256": "cbfb4b08c8473930567ef63e1277dc5c1c14d67d807055304c54dd1332e1d22b",
+  "word_count": 94,
+  "text": "Every customer served.\nEvery product sold.\nEvery commit merged.\nEvery agent task completed.\nThat's inference.\nTraining creates the possibility.\nInference creates the value.\nThe more we ask of AI, the more inference it takes.\nAnd inference is becoming the bottleneck.\nGroq was built for this.\nWe pioneered the LPU.\nNow, with LPX, it works alongside NVIDIA's next-generation GPUs to deliver unparalleled inference capability, reliably, affordably, at scale.\nFast or affordable is no longer a tradeoff.\nWe're building hundreds of megawatts of capacity, with many more on the way.\nGroq makes inference work at scale."
+}
