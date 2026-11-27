@@ -4,7 +4,56 @@
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/feed.xml" rel="self"/>
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/"/>
   <id>https://rcarloc.github.io/histdiff-ledger-v02/</id>
-  <updated>2026-11-27T09:12:04+00:00</updated>
+  <updated>2026-11-27T21:48:03+00:00</updated>
+  <entry>
+    <title>Docker Hub Usage Limits changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/docker-hub-limits-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/docker-hub-limits-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Docker Hub Usage Limits changed wording from &quot;For more details, see Pull usage and limits .&quot; to &quot;For more details, see Pull usage and limits&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Cohere Pricing changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/cohere-pricing-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/cohere-pricing-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Cohere Pricing changed wording from &quot;Reserved capacity available. Please contact sales for details. Monthly and annual commit p&quot; to &quot;Reserved capacity available. Please contact sales for details. Monthly and annual commit p&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Mistral AI Pricing changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/mistral-pricing-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/mistral-pricing-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Mistral AI Pricing changed wording from &quot;For most tasks and coding: Mistral Medium . For document AI: OCR. For audio and speech int&quot; to &quot;For most tasks and coding: Mistral Large 4 . For document AI: OCR 4.1 . For audio and spee&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Fly.io Pricing changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/fly-pricing-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/fly-pricing-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Fly.io Pricing changed wording from &quot;Fly.io bills for the resources you use, with no monthly platform fee. The smallest always-&quot; to &quot;Fly.io bills for the resources you use, with no monthly platform fee. The smallest always-&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Apify Pricing changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/apify-pricing-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/apify-pricing-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Apify Pricing changed wording from &quot;For a full breakdown of both models, see Actors in Apify Store . If you need advice, pleas&quot; to &quot;For a full breakdown of both models, see Apify Store . If you need advice, please contact &quot;.</summary>
+  </entry>
+  <entry>
+    <title>Slack Pricing changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/slack-pricing-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/slack-pricing-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Slack Pricing changed wording from &quot;per user / month, when paying annually&quot; to &quot;Contact sales for pricing&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Supabase Pricing changed (2026-11-27)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/supabase-pricing-2026-11-27.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/supabase-pricing-2026-11-27.html</id>
+    <updated>2026-11-27T21:48:03+00:00</updated>
+    <summary>On 2026-11-27, Supabase Pricing changed wording from &quot;Supports AWS PrivateLink&quot; to &quot;Supports AWS PrivateLink&quot;.</summary>
+  </entry>
   <entry>
     <title>Upstash Pricing changed (2026-11-26)</title>
     <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/upstash-pricing-2026-11-26.html"/>
