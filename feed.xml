@@ -4,7 +4,28 @@
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/feed.xml" rel="self"/>
   <link href="https://rcarloc.github.io/histdiff-ledger-v02/"/>
   <id>https://rcarloc.github.io/histdiff-ledger-v02/</id>
-  <updated>2026-11-27T21:48:03+00:00</updated>
+  <updated>2026-11-28T08:31:12+00:00</updated>
+  <entry>
+    <title>Cohere Pricing changed (2026-11-28)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/cohere-pricing-2026-11-28.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/cohere-pricing-2026-11-28.html</id>
+    <updated>2026-11-28T08:31:12+00:00</updated>
+    <summary>On 2026-11-28, Cohere Pricing changed wording from &quot;Reserved capacity available. Please contact sales for details. Monthly and annual commit p&quot; to &quot;Reserved capacity available. Please contact sales for details. Monthly and annual commit p&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Slack Pricing changed (2026-11-28)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/slack-pricing-2026-11-28.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/slack-pricing-2026-11-28.html</id>
+    <updated>2026-11-28T08:31:12+00:00</updated>
+    <summary>On 2026-11-28, Slack Pricing changed wording from &quot;Contact sales for pricing&quot; to &quot;per user / month, when paying annually&quot;.</summary>
+  </entry>
+  <entry>
+    <title>Cloudflare Pages Limits changed (2026-11-28)</title>
+    <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/cloudflare-pages-limits-2026-11-28.html"/>
+    <id>https://rcarloc.github.io/histdiff-ledger-v02/changes/cloudflare-pages-limits-2026-11-28.html</id>
+    <updated>2026-11-28T08:31:12+00:00</updated>
+    <summary>On 2026-11-28, Cloudflare Pages Limits changed wording from &quot;Below are limits observed by the Cloudflare Free plan. For more details on removing these &quot; to &quot;The following limits apply to Cloudflare Pages by plan type. For more details on plans, re&quot;.</summary>
+  </entry>
   <entry>
     <title>Docker Hub Usage Limits changed (2026-11-27)</title>
     <link href="https://rcarloc.github.io/histdiff-ledger-v02/changes/docker-hub-limits-2026-11-27.html"/>
